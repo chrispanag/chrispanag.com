@@ -18,10 +18,10 @@ params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
   title: Christos Panagiotakopoulos
   description: "Software Engineer"
-  keywords: [Blog, Portfolio, PaperMod]
+  keywords: [christos, panagiotakopoulos, software, engineer, web3, capsule social, blogchain]
   author: Me
   # author: ["Me", "You"] # multiple authors
-  images: ["<link or path of image for opengraph, twitter-cards>"]
+  # images: ["<link or path of image for opengraph, twitter-cards>"]
   DateFormat: "January 2, 2006"
   defaultTheme: auto # dark, light
   disableThemeToggle: false
@@ -64,12 +64,12 @@ params:
     imageUrl: "profile.jpeg"
     imageWidth: 120
     imageHeight: 120
-    imageTitle: my image
+    imageTitle: profile picture
     buttons:
-      - name: Posts
+      - name: Blog
         url: posts
-      - name: Tags
-        url: tags
+      - name: About
+        url: about
 
   socialIcons:
     - name: twitter
@@ -83,10 +83,6 @@ params:
 
   analytics:
     google:
-      SiteVerificationTag: "XYZabc"
-    bing:
-      SiteVerificationTag: "XYZabc"
-    yandex:
       SiteVerificationTag: "XYZabc"
 
   cover:
@@ -109,8 +105,17 @@ params:
     threshold: 0.4
     minMatchCharLength: 0
     keys: ["title", "permalink", "summary", "content"]
+
 menu:
   main:
+    - identifier: aboutme
+      name: about me
+      url: /about
+      weight: 5
+    - identifier: blog
+      name: blog
+      url: /posts
+      weight: 7
     - identifier: categories
       name: categories
       url: /categories/
