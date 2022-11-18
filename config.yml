@@ -114,18 +114,14 @@ menu:
       name: about me
       url: /about
       weight: 5
+    - identifier: ontheweb
+      name: me on the web
+      url: /chrispanag-on-the-web
+      weight: 5
     - identifier: blog
       name: blog
       url: /posts
       weight: 7
-    - identifier: categories
-      name: categories
-      url: /categories/
-      weight: 10
-    - identifier: tags
-      name: tags
-      url: /tags/
-      weight: 20
     # - identifier: example
     #   name: example.org
     #   url: https://example.org
