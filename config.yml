@@ -80,6 +80,8 @@ params:
       url: "https://github.com/chrispanag"
     - name: linkedin
       url: "https://www.linkedin.com/in/chrispanag/"
+    - name: mastodon
+      url: "https://fosstodon.org/@chrispanag"
 
   analytics:
     google:
