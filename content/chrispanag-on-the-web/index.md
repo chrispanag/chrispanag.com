@@ -64,5 +64,4 @@ Various places I have appeared on the web and beyond!
 ## Various Profiles
 
 1. [Rembetiko Forum](https://rembetiko.gr/u/chrispanag/summary)
-2. [blogchain.app](https://blogchain.app/u/christos)
-3. [youtube.com](https://youtube.com/@chrispanag)
+2. [youtube.com](https://youtube.com/@chrispanag)
