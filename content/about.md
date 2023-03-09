@@ -23,8 +23,10 @@ From time to time you can read some of my thoughts, projects and ideas that I sh
 **2016:** Built ["When is my bus coming" ("Πότε έρχεται το λεωφορείο μου")](https://www.facebook.com/athensbus/), a Facebook chatbot that informed users of the estimated time of arrival of buses in Athens, Greece. At it's peak, it was serving over 20,000 weekly users. 
 (press references: [iEfimerida](https://www.iefimerida.gr/ellada/pote-erhetai-leoforeio-22hronos-eftiaxe-efarmogi), [noupou.gr](https://www.nou-pou.gr/stories/christos-panagiotakopoulos-i-efarmogi-ine-ena-pleonektima-sto-viografiko-mou/))
 
-**2017-2021:** Working at [Enneas](https://enneas.gr), a software house based in Athens, Greece. There, I designed from scratch their chatbot infrastructure and cooperated with big greek organisations such as Cosmote and OPAP to produce innovative software solutions.
+**Sep 2017 - Jul 2021:** Working at [Enneas](https://enneas.gr), a software house based in Athens, Greece. There, I designed from scratch their chatbot infrastructure and cooperated with big greek organisations such as Cosmote and OPAP to produce innovative software solutions.
 
-**2021-Now:** Working at [Capsule Social](https://capsule.social) as Lead Backend Engineer. We released [Blogchain](https://blogchain.app), a decentralised, censorship resistant, blogging platform where articles are stored on IPFS.
+**Aug 2021 - Feb 2023:** Working at [Capsule Social](https://capsule.social) as Lead Backend Engineer. We released [Blogchain](https://blogchain.app), a decentralised, censorship resistant, blogging platform where articles are stored on IPFS.
 
-**2022:** Moved to Paris, France.
+**Feb 2022:** Moved to Paris, France.
+
+**Mar 2023:** Built [Paroles.gr](https://paroles.gr), a web app built on NestJS, React, Postgresql and Typescript that allows users to easily search the lyrics of greek songs.
