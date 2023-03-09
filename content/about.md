@@ -23,7 +23,7 @@ From time to time you can read some of my thoughts, projects and ideas that I sh
 
 **Sep 2017 - Jul 2021:** Working at [Enneas](https://enneas.gr), a software house based in Athens, Greece. There, I designed from scratch their chatbot infrastructure and cooperated with big greek organisations such as Cosmote and OPAP to produce innovative software solutions.
 
-**Aug 2021 - Feb 2023:** Working at Capsule Social as Lead Backend Engineer. We released Blogchain, a decentralised, censorship resistant, blogging platform where articles are stored on IPFS. (press references: [TechCrunch 2021](https://techcrunch.com/2021/03/09/capsule-gets-1-5m-to-build-super-simple-decentralized-social-media/), [NearWeek](https://medium.com/nearweek/introducing-blogchain-a-near-native-platform-for-independent-writers-289f7ad63ad8))
+**Aug 2021 - Feb 2023:** Working at Capsule Social as Lead Backend Engineer. We released Blogchain, a decentralised, censorship resistant, blogging platform where articles are stored on IPFS. (press references: [TechCrunch 2021](https://techcrunch.com/2021/03/09/capsule-gets-1-5m-to-build-super-simple-decentralized-social-media/), [NearWeek](https://medium.com/nearweek/introducing-blogchain-a-near-native-platform-for-independent-writers-289f7ad63ad8), [ProductHunt](https://www.producthunt.com/products/blogchain#blogchain))
 
 **Feb 2022:** Moved to Paris, France.
 
