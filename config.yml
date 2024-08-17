@@ -72,16 +72,14 @@ params:
         url: about
 
   socialIcons:
-    - name: twitter
-      url: "https://twitter.com/chrispanag"
-    - name: stackoverflow
-      url: "https://stackoverflow.com/users/6141173/christos-panagiotakopoulos"
-    - name: github
-      url: "https://github.com/chrispanag"
     - name: linkedin
       url: "https://www.linkedin.com/in/chrispanag/"
-    - name: mastodon
-      url: "https://fosstodon.org/@chrispanag"
+    - name: github
+      url: "https://github.com/chrispanag"
+    - name: x
+      url: "https://x.com/chrispanag"
+    - name: stackoverflow
+      url: "https://stackoverflow.com/users/6141173/christos-panagiotakopoulos"
 
   analytics:
     google:
