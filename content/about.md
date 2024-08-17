@@ -8,7 +8,7 @@ comments: false
 
 # My name is Christos Panagiotakopoulos
 
-I'm a self-proclaimed software craftsman with a 6-year experience in Node.js.
+I'm a software engineer with substantial experience in scaling high-throughput systems in NodeJS and Golang. 
 
 In my free time, I play greek rembetiko music on the guitar and administer the [rembetiko.gr](https://rembetiko.gr) community.
 
