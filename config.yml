@@ -17,8 +17,8 @@ minify:
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
   title: Christos Panagiotakopoulos
-  description: "Software Engineer"
-  keywords: [christos, panagiotakopoulos, software, engineer, web3, capsule social, blogchain]
+  description: "Software Engineer | ex-BeReal"
+  keywords: [christos, panagiotakopoulos, software, engineer, web3, capsule social, blogchain, bereal, ex-bereal, platform]
   author: Me
   # author: ["Me", "You"] # multiple authors
   # images: ["<link or path of image for opengraph, twitter-cards>"]
