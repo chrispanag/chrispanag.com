@@ -60,7 +60,7 @@ params:
   profileMode:
     enabled: true # needs to be explicitly set
     title: Christos Panagiotakopoulos
-    subtitle: "Software Engineer"
+    subtitle: "Software Engineer | ex-BeReal"
     imageUrl: "profile.jpeg"
     imageWidth: 120
     imageHeight: 120
