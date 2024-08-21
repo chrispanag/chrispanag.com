@@ -27,6 +27,6 @@ From time to time you can read some of my thoughts, projects and ideas that I sh
 
 **Feb 2022:** Moved to Paris, France.
 
-**Mar 2023:** 
-* Started working at [BeReal](http://bere.al/) as Backend Engineer.
-* Built [Paroles.gr](https://paroles.gr), a web app built on NestJS, React, Postgresql and Typescript that allows users to easily search the lyrics of greek songs.
+**Mar 2023:** Built [Paroles.gr](https://paroles.gr), a web app built on NestJS, React, Postgresql and Typescript that allows users to easily search the lyrics of greek songs.
+
+**Mar 2023 - Aug 2024:** Working at [BeReal](http://bere.al/) as a Platform Backend Engineer. I was working in developing highly scalable and cost-effective backend services using Go and NodeJS. My work focused on powering BeReal's core features, ensuring optimal performance and reliability. I've designed and contributed significantly to services that handle over 1M req/s, helping to support our user base and demand.
