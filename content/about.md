@@ -8,7 +8,7 @@ comments: false
 
 # My name is Christos Panagiotakopoulos
 
-I'm a software engineer with substantial experience in scaling high-throughput systems in NodeJS and Golang. 
+I’m a software engineer specializing in backend services. I work with Go and NodeJS to build systems that support millions of users. I enjoy creating efficient, scalable solutions that ensure everything runs smoothly at scale.
 
 In my free time, I play greek rembetiko music on the guitar and administer the [rembetiko.gr](https://rembetiko.gr) community.
 
