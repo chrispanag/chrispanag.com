@@ -10,7 +10,7 @@ comments: false
 
 I’m a software engineer specializing in backend services. I work with Go and NodeJS to build systems that support millions of users. I enjoy creating efficient, scalable solutions that ensure everything runs smoothly at scale.
 
-In my free time, I play greek rembetiko music on the guitar and administer the [rembetiko.gr](https://rembetiko.gr) community.
+Originally from Athens, Greece, I now live in Paris, France. In my free time, I play greek rembetiko music on the guitar and administer the [rembetiko.gr](https://rembetiko.gr) community.
 
 From time to time you can read some of my thoughts, projects and ideas that I share on [my blog](/posts).
 
