@@ -19,7 +19,7 @@ Various places I have appeared on the web and beyond!
 
 ## Media coverage
 
-### NEARCON 2022 @ Lisbon, Portugal - Representing [Capsule Social](https://capsule.social)
+### NEARCON 2022 @ Lisbon, Portugal - Representing Capsule Social
 
 1. [Not Your Parent's Facebook: Building Social Media in Web3](https://www.youtube.com/watch?v=C-qg7eRlLtE&t=5801s)
 
