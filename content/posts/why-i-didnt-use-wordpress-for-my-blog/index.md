@@ -13,11 +13,11 @@ cover:
 
 You want to create a blog to start sharing some thoughts, ideas or projects. But when you want to post something, you don't want to think a lot about the underlying software, and you definitely don't want to mess with lots of settings, buttons, designs and properties.
 
-If you are a major procrastinator like me, every little configurable setting or element, can be a reason to "think it over again", "start writing some other day", "need more time" and more excuses for not finishing or even starting your blog post. 
+If you are a major procrastinator like me, every little configurable setting or element, can be a reason to "think it over again", "start writing some other day", "need more time" and more excuses for not finishing or even starting your blog post.
 
-That's why, when I decided to start posting on a blog, I needed something that integrates well with my current workflow. 
+That's why, when I decided to start posting on a blog, I needed something that integrates well with my current workflow.
 
-As a developer, I use git/github for storing and managing my projects and I write almost everything I create on VSCode. I'm also fluent with Markdown, which I use for most of my projects to document and write directions. For me, visual editors, such as the one used by Wordpress, are just clutter that gets in the way of writing my thoughts. 
+As a developer, I use git/github for storing and managing my projects and I write almost everything I create on VSCode. I'm also fluent with Markdown, which I use for most of my projects to document and write directions. For me, visual editors, such as the one used by Wordpress, are just clutter that gets in the way of writing my thoughts.
 
 So what I needed, was an easy-to-use **static site generator** that takes Markdown and spits out HTML pages. One of those was [**hugo**](https://gohugo.io), and after some fiddling around with it, I found out that this is the one. This, coupled with [a nice theme](https://git.io/hugopapermod) lead to the creation of my website.
 
@@ -25,7 +25,7 @@ Now, when I want to write a new post on my [blog](/posts), I fire up VSCode, ope
 
 ![vscode.webp](vscode.webp)
 
-### Some additional benefits: 
+### Some additional benefits
 
 1. The website is ranked 100/100 on [Google's Page Speed Insights](https://developers.google.com/speed/pagespeed/insights/?url=https%3A%2F%2Fchrispanag.com). This means my website is treated more favorably from search engines.
 

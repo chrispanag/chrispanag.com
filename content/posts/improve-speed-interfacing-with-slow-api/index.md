@@ -15,13 +15,13 @@ cover:
 
 **So here's the scenario:**
 
-You have a system that interfaces with a really slow third-party API. User Bob, needs some data, so your system performs a request to the third-party API, and waits for a response. In the meantime, user Alice needs the same date and the system performs the same request to the API on behalf of her. Both users are now waiting for two requests that the only difference they have, is the execution time. 
+You have a system that interfaces with a really slow third-party API. User Bob, needs some data, so your system performs a request to the third-party API, and waits for a response. In the meantime, user Alice needs the same date and the system performs the same request to the API on behalf of her. Both users are now waiting for two requests that the only difference they have, is the execution time.
 
 If a request to this API has an average response time of 1 second, both users will wait 1 second. Also, you would need to occupy resources in your system and the third-party API for more than 1 second, and for 2 seconds at most!
 
 ## The solution
 
-What if you could have both users, Bob and Alice, wait for the same request? Then, although Bob will still wait for the request for 1 second, Alice will use Bob's request, and wait less time for the response. 
+What if you could have both users, Bob and Alice, wait for the same request? Then, although Bob will still wait for the request for 1 second, Alice will use Bob's request, and wait less time for the response.
 
 To achieve that, we'll need a **promise-cache subsystem**. This subsystem will consist of a data structure to store our requests' promises and of a way to retrieve them/delete them when they are not needed.
 
@@ -53,7 +53,7 @@ function memoizedRequest(url: string) {
 }
 ```
 
-With this, we have achieved the basic function of our promise-cache subsystem. When our system performs a request using the `memoizedRequest` function, and the request has already happened, it returns the same promise. 
+With this, we have achieved the basic function of our promise-cache subsystem. When our system performs a request using the `memoizedRequest` function, and the request has already happened, it returns the same promise.
 
 But, we haven't yet implemented the mechanism for the deletion of the promise from the cache when the promise resolves (when the request returns results)
 
@@ -88,7 +88,7 @@ function memoizedRequest(url: string) {
 
 ### But what happens with more complicated requests?
 
-Not all requests can be differentiated by just the url they are performed on. There are many other parameters that make a request different (eg: headers, body etc). 
+Not all requests can be differentiated by just the url they are performed on. There are many other parameters that make a request different (eg: headers, body etc).
 
 For that, we'll need to refine our promise-cache's key and add an options object on our function:
 
@@ -129,13 +129,14 @@ This implementation has a small drawback, that can prove serious on a production
 ```typescript
 const key = hasher(url + JSON.stringify(options));
 ```
+
 ### Caveats
 
 This solution, isn't applicable to any situation. To use this solution, you need to ensure that the API you are interfacing with, **is not providing different responses for two different requests** in the amount of time it will take for those requests to resolve.
 
 ## The package
 
-If you don't want to code this for yourself, I created a simple [**npm package**](https://www.npmjs.com/package/memoized-node-fetch) that does all of the above, as a wrapper to [node-fetch](https://www.npmjs.com/package/node-fetch) (or any other fetch-like function you choose). 
+If you don't want to code this for yourself, I created a simple [**npm package**](https://www.npmjs.com/package/memoized-node-fetch) that does all of the above, as a wrapper to [node-fetch](https://www.npmjs.com/package/node-fetch) (or any other fetch-like function you choose).
 
 ```typescript
 import memoizedNodeFetch from 'memoized-node-fetch';
@@ -159,7 +160,7 @@ const fetch = memoizedNodeFetch();
 
 You can see all of the above work, on its Github repository here:
 
-https://github.com/chrispanag/memoized-node-fetch
+[https://github.com/chrispanag/memoized-node-fetch](https://github.com/chrispanag/memoized-node-fetch)
 
 PS. 1: Although this can be used in the front-end, I can't find a very useful use-case for it, especially when you have other packages such as react-query/swr, that although they perform a different function than the above, can sometimes remove the need for it.
 

@@ -1,12 +1,15 @@
 baseURL: "https://chrispanag.com/"
 title: Christos Panagiotakopoulos
-paginate: 5
-theme: PaperMod
+theme: [PaperMod]
 
 enableRobotsTXT: true
+enableInlineShortcodes: true
 buildDrafts: false
 buildFuture: false
 buildExpired: false
+enableEmoji: true
+pygmentsUseClasses: true
+mainsections: ["posts", "about"]
 
 googleAnalytics: "G-5TRQBY0Y8M"
 
@@ -14,10 +17,14 @@ minify:
   disableXML: true
   minifyOutput: true
 
+pagination:
+  disableAliases: false
+  pagerSize: 5
+
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
   title: Christos Panagiotakopoulos
-  description: "Software Engineer | ex-BeReal"
+  description: "Engineering Manager at Prelude | ex-BeReal"
   keywords: [christos, panagiotakopoulos, software, engineer, web3, capsule social, blogchain, bereal, ex-bereal, platform]
   author: Me
   # author: ["Me", "You"] # multiple authors
@@ -43,7 +50,7 @@ params:
   tocopen: false
 
   assets:
-    # disableHLJS: true # to disable highlight.js
+    disableHLJS: true # to disable highlight.js
     # disableFingerprinting: true
     favicon: "favicon.ico"
     favicon16x16: "favicon-16x16.png"
@@ -60,7 +67,7 @@ params:
   profileMode:
     enabled: true # needs to be explicitly set
     title: Christos Panagiotakopoulos
-    subtitle: "Software Engineer | ex-BeReal"
+    subtitle: "Engineering Manager @ [Prelude](https://prelude.so) | ex-BeReal"
     imageUrl: "profile.jpeg"
     imageWidth: 120
     imageHeight: 120
@@ -125,7 +132,6 @@ menu:
     #   url: https://example.org
     #   weight: 30
 # Read: https://github.com/adityatelange/hugo-PaperMod/wiki/FAQs#using-hugos-syntax-highlighter-chroma
-pygmentsUseClasses: true
 
 markup:
   highlight:
