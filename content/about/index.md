@@ -14,9 +14,9 @@ I'm a builder. I've spent my career building products and the systems behind the
 
 Now I own the technical direction at [Prelude](https://prelude.so), where I lead the engineering team building onboarding and auth infrastructure for platforms: verification and anti-fraud systems designed to be faster, cheaper, and harder to abuse, all at once. I'm responsible for what we ship and how it holds up at scale, and I still write code alongside the team.
 
-{{< figure src="prelude-team.jpg" alt="The Prelude team gathered for a group photo in the office" caption="The Prelude team" loading="lazy" >}}
+{{< photo src="prelude-team.jpg" alt="The Prelude team gathered for a group photo in the office" caption="The Prelude team" >}}
 
-I work mostly with Go and NodeJS. Originally from Athens, Greece, I now live in Paris, France. In my free time I play Greek rembetiko music on the guitar and administer the [rembetiko.gr](https://rembetiko.gr) community.
+Originally from Athens, Greece, I now live in Paris, France. In my free time I play Greek rembetiko music on the guitar and administer the [rembetiko.gr](https://rembetiko.gr) community.
 
 From time to time I share thoughts, projects and ideas on [my blog](/posts).
 

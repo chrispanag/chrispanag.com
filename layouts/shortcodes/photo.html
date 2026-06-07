@@ -1,0 +1,20 @@
+{{- /* Captioned image for page bundles. Resolves the named co-located resource and
+       emits an ABSOLUTE, fingerprinted URL through the resource pipeline. The built-in
+       `figure` shortcode emits the `src` verbatim, so a relative src like
+       "prelude-team.jpg" 404s on pages served without a trailing slash (e.g. /about):
+       the browser resolves it against the site root, not the page bundle. Going through
+       .RelPermalink yields /about/<name>.<hash>.jpg, which works everywhere and busts
+       the CDN cache on update. Mirrors the profile-photo shortcode pattern.
+
+       Params: src (required, matches a co-located resource), alt, caption. */ -}}
+{{- $src := .Get "src" -}}
+{{- with .Page.Resources.GetMatch $src -}}
+  {{- $img := . | resources.Fingerprint -}}
+  <figure>
+    <img loading="lazy" src="{{ $img.RelPermalink }}" width="{{ .Width }}" height="{{ .Height }}"
+         alt="{{ $.Get "alt" }}" />
+    {{- with $.Get "caption" }}<figcaption>{{ . }}</figcaption>{{ end -}}
+  </figure>
+{{- else -}}
+  {{- errorf "photo shortcode: resource %q not found in page bundle %q" $src $.Page.File.Path -}}
+{{- end -}}
