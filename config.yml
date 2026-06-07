@@ -27,7 +27,7 @@ outputFormats:
     notAlternative: true
 
 outputs:
-  home: ["HTML", "RSS", "llms"]
+  home: ["HTML", "RSS", "llms", "JSON"] # JSON powers the Fuse.js search index (index.json)
 
 pagination:
   disableAliases: false
@@ -36,11 +36,15 @@ pagination:
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
   title: Christos Panagiotakopoulos
-  description: "Engineering Manager at Prelude | ex-BeReal"
-  keywords: [christos, panagiotakopoulos, software, engineer, web3, capsule social, blogchain, bereal, ex-bereal, platform]
-  author: Me
-  # author: ["Me", "You"] # multiple authors
-  # images: ["<link or path of image for opengraph, twitter-cards>"]
+  description: "Engineering Manager at Prelude (ex-BeReal). I build backend and platform systems at scale, and the teams behind them."
+  keywords: [christos panagiotakopoulos, engineering manager, software engineer, backend, platform engineering, golang, nodejs, prelude, bereal, web3, capsule social, blogchain]
+  author: Christos Panagiotakopoulos
+  # default image used for opengraph / twitter-cards on pages without their own cover
+  images: ["profile.jpeg"]
+
+  # Mark up the site as a Person (not an Organization) for richer structured data
+  schema:
+    publisherType: "Person"
   DateFormat: "January 2, 2006"
   defaultTheme: auto # dark, light
   disableThemeToggle: false
@@ -89,6 +93,8 @@ params:
         url: posts
       - name: About
         url: about
+      - name: On the web
+        url: chrispanag-on-the-web
 
   socialIcons:
     - name: linkedin
@@ -97,12 +103,12 @@ params:
       url: "https://github.com/chrispanag"
     - name: x
       url: "https://x.com/chrispanag"
-    - name: stackoverflow
-      url: "https://stackoverflow.com/users/6141173/christos-panagiotakopoulos"
 
-  analytics:
-    google:
-      SiteVerificationTag: "G-5TRQBY0Y8M"
+  # Google Search Console verification. Paste the HTML-tag token from
+  # Search Console here — this is NOT the GA4 measurement ID (G-XXXX).
+  # analytics:
+  #   google:
+  #     SiteVerificationTag: ""
 
   cover:
     hidden: true # hide everywhere but not in structured data
@@ -110,7 +116,7 @@ params:
     hiddenInSingle: true # hide on single page
 
   editPost:
-    URL: "https://github.com/chrispanag/chrispanag.com/content"
+    URL: "https://github.com/chrispanag/chrispanag.com/edit/main/content"
     Text: "Suggest Changes" # edit text
     appendFilePath: true # to append file path to Edit link
 
@@ -139,6 +145,10 @@ menu:
       name: blog
       url: /posts
       weight: 7
+    - identifier: search
+      name: search
+      url: /search
+      weight: 9
     # - identifier: example
     #   name: example.org
     #   url: https://example.org
