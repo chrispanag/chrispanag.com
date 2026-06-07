@@ -1,4 +1,5 @@
 ---
+title: "About"
 layout: "single"
 url: "/about"
 summary: About

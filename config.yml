@@ -17,6 +17,18 @@ minify:
   disableXML: true
   minifyOutput: true
 
+# llms.txt: a plain-text index of the site for LLM consumption.
+# See https://llmstxt.org/ — generated from layouts/llms.txt in the PaperMod theme.
+outputFormats:
+  llms:
+    mediaType: "text/plain"
+    baseName: "llms"
+    isPlainText: true
+    notAlternative: true
+
+outputs:
+  home: ["HTML", "RSS", "llms"]
+
 pagination:
   disableAliases: false
   pagerSize: 5
