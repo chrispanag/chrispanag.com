@@ -21,7 +21,9 @@ Requires **Hugo extended** (`brew install hugo`). Built/tested with v0.162.1+ext
   - `posts/<slug>/index.md` — blog posts, with cover/images co-located in the same dir.
   - `about/index.md` — the About page bundle; co-locates `profile.jpeg`, rendered as a
     circular portrait by the `{{< profile-photo >}}` shortcode (resized + fingerprinted).
-  - `chrispanag-on-the-web/` — standalone single page.
+  - `chrispanag-on-the-web/index.md` — the "Me on the web" page: a card gallery of
+    appearances + profile pills, built from co-located images and the `web-card` /
+    `web-grid` / `web-profiles` / `web-link` shortcodes (see Content conventions).
 - `archetypes/default.md` — template for `hugo new` (defaults `draft: true`).
 - `static/` — favicons, profile image; served at site root.
 - `themes/PaperMod/` — theme, pinned as a **git submodule** (not vendored).
@@ -38,6 +40,12 @@ Requires **Hugo extended** (`brew install hugo`). Built/tested with v0.162.1+ext
   first, each as `**<Date>** <description>` with a bold date and **no trailing colon**
   (the date renders as a label). Component: `layouts/shortcodes/timeline.html` +
   `assets/css/extended/timeline.css`. To add an entry, use the `add-timeline-entry` skill.
+- The **"Me on the web"** page (`content/chrispanag-on-the-web/index.md`) is a card
+  gallery, not plain markdown: appearances are `{{< web-card >}}` entries inside
+  `{{< web-grid >}}` (cover image, kicker, title, inline description), and profile
+  links are `{{< web-link >}}` pills inside `{{< web-profiles >}}`. Co-locate cover
+  images in the bundle; image-less cards fall back to a placeholder glyph. To add a
+  link, use the `add-web-link` skill.
 
 ## Gotchas
 
@@ -56,3 +64,8 @@ Requires **Hugo extended** (`brew install hugo`). Built/tested with v0.162.1+ext
   + `outputs.home` in `config.yml`), alongside HTML and RSS.
 - **Site search** needs `JSON` in `outputs.home` (generates `index.json`) plus
   `content/search.md` with `layout: search`. Don't drop `JSON` from `outputs.home`.
+- **Building custom components on PaperMod:** components rendered inside `.post-content`
+  must beat the theme's own rules — `.post-content a` adds an underline `box-shadow` and
+  `.post-content img` adds `border-radius`/`margin`, so scope overrides under
+  `.post-content` (a bare class loses on specificity). Reuse the theme's icon set with
+  `{{ partial "svg.html" (dict "name" "github") }}` (unknown names fall back to a link glyph).
