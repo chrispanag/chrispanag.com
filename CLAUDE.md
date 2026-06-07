@@ -26,6 +26,7 @@ Requires **Hugo extended** (`brew install hugo`). Built/tested with v0.162.1+ext
 
 ## Content conventions
 
+- Site copy is **American English, no em dashes**.
 - New posts are page bundles: create `content/posts/<slug>/index.md` and put images
   in the same folder. Reference them with `cover.relative: true` / relative paths.
 - Post front matter: `author`, `title`, `date`, `description`, `tags`, `categories`,
@@ -36,8 +37,15 @@ Requires **Hugo extended** (`brew install hugo`). Built/tested with v0.162.1+ext
 - **Theme is a git submodule.** A fresh clone has an empty `themes/PaperMod/`, so
   `hugo` fails until `git submodule update --init --recursive`. The submodule is
   pinned to a specific commit.
+- **Overriding theme partials:** copy into `layouts/_partials/<name>.html` (new
+  template system — underscore, **not** `layouts/partials/`). Avoid forking a partial
+  just to make nav/asset URLs relative: prod builds use absolute URLs by design
+  (correct for canonical/OG), and `hugo server` rewrites `baseURL` to localhost for
+  local preview. Preview with `hugo server`, not by static-serving `./public`.
 - **`buildDrafts: false`** — drafts are excluded from production builds; preview them
   with `hugo server -D`.
 - **`config.yml`, not TOML** — edit the YAML file; there is no `config.toml`.
 - The home page emits a custom **`llms.txt`** plain-text output (`outputFormats.llms`
   + `outputs.home` in `config.yml`), alongside HTML and RSS.
+- **Site search** needs `JSON` in `outputs.home` (generates `index.json`) plus
+  `content/search.md` with `layout: search`. Don't drop `JSON` from `outputs.home`.
