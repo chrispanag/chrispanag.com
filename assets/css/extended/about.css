@@ -23,3 +23,11 @@
         shape-outside: none;
     }
 }
+
+/* Captioned bundle photo, rendered by the {{< photo >}} shortcode. The img carries
+   width/height attributes (to reserve space and avoid layout shift), so height:auto is
+   needed to keep the aspect ratio when max-width:100% constrains the width. Scoped under
+   .post-content img to beat PaperMod's `.post-content img` rule. */
+.post-content img.photo {
+    height: auto;
+}
