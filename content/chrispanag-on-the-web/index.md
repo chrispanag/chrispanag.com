@@ -16,7 +16,7 @@ cover:
 
 # Me on the web
 
-Various places I have appeared on the web and beyond!
+Places I've appeared online and in the press.
 
 ## Media coverage
 
@@ -24,13 +24,13 @@ Various places I have appeared on the web and beyond!
 
 1. [Not Your Parent's Facebook: Building Social Media in Web3](https://www.youtube.com/watch?v=C-qg7eRlLtE&t=5801s)
 
-    Together with fellow industry experts, we participated in a panel discussion where we discussed the next generation of social media built on decentralized technologies and how we apply these on Blogchain.
+    A panel discussion on the next generation of social media built on decentralized technologies, and how we applied those ideas on Blogchain.
 
     ![Christos Panagiotakopoulos on a panel at NEARCON 2022 in Lisbon](speech.jpeg)
 
 2. [Ready Layer One: Blogchain decentralized blogging platform built on NEAR for web3 | podcast](https://podcasts.apple.com/us/podcast/blogchain-decentralized-blogging-platform-built-on/id1607956235?i=1000583154222)
 
-    Together with my colleague Jack Dishman we had the opportunity to discuss Blogchain and show how decentralization can solve the issues found in traditional social media.
+    With my colleague Jack Dishman, I discussed Blogchain and how decentralization can address the problems in traditional social media.
 
     ![Ready Layer One podcast episode about Blogchain](ready_layer_one.jpeg)
 
@@ -38,7 +38,7 @@ Various places I have appeared on the web and beyond!
 
 1. [Μια Ελληνική εταιρεία που παίζει δυνατά στο VR/AR και τα chatbots](https://www.itspossible.gr/enneas-syn/)
 
-    Joint interview with my ex-colleague George Patseas, on how we created a sustainable software agency business in Athens, Greece.
+    Joint interview with my former colleague George Patseas, on how we built a sustainable software agency in Athens, Greece.
 
     ![The Enneas team](enneas.jpg)
 

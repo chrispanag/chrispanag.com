@@ -1,0 +1,56 @@
+/* Vertical timeline used on the About page (wrapped in the {{< timeline >}} shortcode). */
+.timeline {
+    position: relative;
+    margin: 24px 0 8px;
+    padding-left: 30px;
+}
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 8px;
+    bottom: 10px;
+    width: 2px;
+    background: var(--border);
+}
+
+.timeline p {
+    position: relative;
+    margin: 0 0 24px;
+    line-height: 1.6;
+}
+
+.timeline p:last-child {
+    margin-bottom: 0;
+}
+
+/* Marker on the line */
+.timeline p::before {
+    content: "";
+    position: absolute;
+    left: -28px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    background: var(--theme);
+    border: 2px solid var(--secondary);
+    transition: border-color 0.2s ease;
+}
+
+.timeline p:hover::before {
+    border-color: var(--primary);
+}
+
+/* The bold date becomes a small label above each entry */
+.timeline p strong {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--secondary);
+}

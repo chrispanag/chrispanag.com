@@ -31,6 +31,11 @@ Requires **Hugo extended** (`brew install hugo`). Built/tested with v0.162.1+ext
   in the same folder. Reference them with `cover.relative: true` / relative paths.
 - Post front matter: `author`, `title`, `date`, `description`, `tags`, `categories`,
   optional `cover.image`. See existing posts for the pattern.
+- The About page **timeline** is a custom component, not plain markdown: entries live
+  inside `{{< timeline >}} … {{< /timeline >}}` in `content/about.md`, ordered oldest
+  first, each as `**<Date>** <description>` with a bold date and **no trailing colon**
+  (the date renders as a label). Component: `layouts/shortcodes/timeline.html` +
+  `assets/css/extended/timeline.css`. To add an entry, use the `add-timeline-entry` skill.
 
 ## Gotchas
 
