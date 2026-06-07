@@ -1,0 +1,151 @@
+/* "Me on the web" page: a card gallery of appearances + a row of profile pills.
+   Rendered by the web-grid / web-card / web-profiles / web-link shortcodes
+   (layouts/shortcodes). Several rules are scoped under .post-content to beat
+   PaperMod's own `.post-content a` (underline box-shadow) and `.post-content img`
+   (border-radius + margin) rules, which are more specific than a bare class. */
+
+/* ---- Card grid ---------------------------------------------------------- */
+.web-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 22px;
+    margin: 8px 0 8px;
+}
+
+.post-content a.web-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--entry);
+    color: inherit;
+    box-shadow: none; /* cancel PaperMod's underline box-shadow on links */
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.post-content a.web-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--tertiary);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
+}
+
+/* Cover image / placeholder */
+.post-content .web-card__cover {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    margin: 0; /* cancel PaperMod's `.post-content img` margin */
+    border-radius: 0;
+    background: var(--code-bg);
+}
+
+.web-card__cover--ph {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--code-bg), var(--entry));
+    border-bottom: 1px solid var(--border);
+    color: var(--secondary);
+}
+
+.web-card__cover--ph svg {
+    width: 44px;
+    height: 44px;
+    opacity: 0.7;
+}
+
+/* Body */
+.web-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    padding: 16px 18px 18px;
+}
+
+.web-card__kicker {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--secondary);
+}
+
+.web-card__title {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    font-size: 1.02rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--primary);
+}
+
+.web-card__arrow {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    transform: translateY(1px);
+    color: var(--secondary);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.post-content a.web-card:hover .web-card__title {
+    color: var(--primary);
+}
+
+.post-content a.web-card:hover .web-card__arrow {
+    opacity: 1;
+    transform: translate(2px, -1px);
+}
+
+.web-card__desc {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--secondary);
+}
+
+/* ---- Profile pills ------------------------------------------------------ */
+.web-profiles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 6px 0 4px;
+}
+
+.post-content a.web-profile {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--entry);
+    color: var(--primary);
+    font-size: 0.9rem;
+    box-shadow: none; /* cancel PaperMod's underline box-shadow on links */
+    transition: transform 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.post-content a.web-profile:hover {
+    transform: translateY(-2px);
+    border-color: var(--tertiary);
+    color: var(--primary);
+}
+
+.web-profile__icon {
+    display: inline-flex;
+    color: var(--secondary);
+}
+
+.web-profile__icon svg {
+    width: 17px;
+    height: 17px;
+}
+
+.post-content a.web-profile:hover .web-profile__icon {
+    color: var(--primary);
+}
