@@ -21,15 +21,15 @@ As a developer, I use git/GitHub for storing and managing my projects and I writ
 
 So what I needed, was an easy-to-use **static site generator** that takes Markdown and spits out HTML pages. One of those was [**hugo**](https://gohugo.io), and after some fiddling around with it, I found out that this is the one. This, coupled with [a nice theme](https://git.io/hugopapermod) lead to the creation of my website.
 
-Now, when I want to write a new post on my [blog](/posts), I fire up VSCode, open the [site's repository](https://github.com/chrispanag/personal-blog), create a file and just start writing, as I do with every other project. When the post is finished, I just commit and push on GitHub and my website is automatically built and deployed by [Netlify](https://www.netlify.com). No fiddling with visual editors, no complicated options and properties. **I just focus on the content**.
+Now, when I want to write a new post on my [blog](/posts), I fire up VSCode, open the [site's repository](https://github.com/chrispanag/chrispanag.com), create a file and just start writing, as I do with every other project. When the post is finished, I just commit and push on GitHub and my website is automatically built and deployed by [Netlify](https://www.netlify.com). No fiddling with visual editors, no complicated options and properties. **I just focus on the content**.
 
-![vscode.webp](vscode.webp)
+![Writing a blog post in VSCode](vscode.webp)
 
 ### Some additional benefits
 
 1. The website is ranked 100/100 on [Google's Page Speed Insights](https://developers.google.com/speed/pagespeed/insights/?url=https%3A%2F%2Fchrispanag.com). This means my website is treated more favorably by search engines.
 
-   ![page-rank.webp](page-rank.webp)
+   ![chrispanag.com scoring 100/100 on Google PageSpeed Insights](page-rank.webp)
 
 2. No upkeep: security checks and server maintenance. I don't need to update anything, or configure anything other than what matters the most, my website.
 

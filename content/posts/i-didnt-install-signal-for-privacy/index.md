@@ -34,7 +34,7 @@ But more importantly, this power hinders innovation and progress. If a better ch
 
 Trying to go against this great power, I installed Signal. I chose Signal because it is in a way the direct opposite of what Facebook's apps are. It is open-source, people can view and contribute to its code and it's backed by a non-profit. It's an app that implements changes based on what its community wants, it's an app that can care about your opinion and your choices.
 
-![signal icon](signal-icon.jpg)
+![The Signal app icon](signal-icon.jpg)
 
 I immediately invited my closest contacts to join and... people joined, then agreed that this app is nice and afterwards nobody contacted me a second time through Signal. Everybody still used Messenger.
 

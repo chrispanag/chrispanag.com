@@ -26,13 +26,13 @@ Various places I have appeared on the web and beyond!
 
     Together with fellow industry experts, we participated in a panel discussion where we discussed the next generation of social media built on decentralized technologies and how we apply these on Blogchain.
 
-    ![Panel Discussion at NEARCON 2022](speech.jpeg)
+    ![Christos Panagiotakopoulos on a panel at NEARCON 2022 in Lisbon](speech.jpeg)
 
 2. [Ready Layer One: Blogchain decentralized blogging platform built on NEAR for web3 | podcast](https://podcasts.apple.com/us/podcast/blogchain-decentralized-blogging-platform-built-on/id1607956235?i=1000583154222)
 
     Together with my colleague Jack Dishman we had the opportunity to discuss Blogchain and show how decentralization can solve the issues found in traditional social media.
 
-    ![Ready Layer One podcast for blogchain](ready_layer_one.jpeg)
+    ![Ready Layer One podcast episode about Blogchain](ready_layer_one.jpeg)
 
 ### ENNEAS
 
@@ -40,11 +40,11 @@ Various places I have appeared on the web and beyond!
 
     Joint interview with my ex-colleague George Patseas, on how we created a sustainable software agency business in Athens, Greece.
 
-    ![Enneas team](enneas.jpg)
+    ![The Enneas team](enneas.jpg)
 
 ### "When is my bus coming" chatbot coverage (in Greek)
 
-![TV Appearance](tv_athensbus.jpeg)
+![Christos Panagiotakopoulos on Greek TV presenting the 'When is my bus coming' chatbot](tv_athensbus.jpeg)
 
 1. [«Πότε έρχεται το λεωφορείο;»: 22χρονος έφτιαξε εφαρμογή που θα λατρέψετε (iEfimerida.gr)](https://www.iefimerida.gr/ellada/pote-erhetai-leoforeio-22hronos-eftiaxe-efarmogi)
 
