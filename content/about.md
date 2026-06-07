@@ -8,8 +8,6 @@ hidemeta: true
 comments: false
 ---
 
-# My name is Christos Panagiotakopoulos
-
 I'm a builder. I've spent my career building products and the systems behind them: backend and platform infrastructure at scale at BeReal, in web3, and for chatbot platforms serving millions of people.
 
 Now I build the teams that build the products. I lead engineering at [Prelude](https://prelude.so), where I'm responsible for the team and the technical direction behind its phone verification and anti-fraud systems. Same instinct, bigger system.
