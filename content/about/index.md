@@ -12,7 +12,9 @@ comments: false
 
 I'm a builder. I've spent my career building products and the systems behind them: platform infrastructure at scale at BeReal, and before that web3 products and chatbot platforms used by millions.
 
-Now I own the technical direction at [Prelude](https://prelude.so), where I lead the engineering team and the architecture behind its phone verification and anti-fraud systems. I'm responsible for what we ship and how it holds up at scale, and I still write code alongside the team.
+Now I own the technical direction at [Prelude](https://prelude.so), where I lead the engineering team building onboarding and auth infrastructure for platforms: verification and anti-fraud systems designed to be faster, cheaper, and harder to abuse, all at once. I'm responsible for what we ship and how it holds up at scale, and I still write code alongside the team.
+
+{{< figure src="prelude-team.jpg" alt="The Prelude team gathered for a group photo in the office" caption="The Prelude team" loading="lazy" >}}
 
 I work mostly with Go and NodeJS. Originally from Athens, Greece, I now live in Paris, France. In my free time I play Greek rembetiko music on the guitar and administer the [rembetiko.gr](https://rembetiko.gr) community.
 
@@ -40,5 +42,7 @@ From time to time I share thoughts, projects and ideas on [my blog](/posts).
 **Sep 2024** Started working at [Prelude](https://prelude.so) as a Senior Software Engineer. I designed and built Prelude's Auth product and its v2 API, launched its email verification system, worked on anti-fraud against SMS pumping, and improved OTP phone verification conversion rates.
 
 **Sep 2025** Promoted to Engineering Manager at [Prelude](https://prelude.so). I lead the team behind its verification and anti-fraud products and own their technical direction, while staying hands-on with the code.
+
+**May 2026** [Prelude](https://prelude.so) raised a $20M Series A led by 20VC, shipped its Auth API and Intel API the same day, and was named one of Europe's top 50 startups. I lead the engineering team behind these products.
 
 {{< /timeline >}}
