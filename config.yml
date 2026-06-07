@@ -103,8 +103,6 @@ params:
       url: "https://github.com/chrispanag"
     - name: x
       url: "https://x.com/chrispanag"
-    - name: stackoverflow
-      url: "https://stackoverflow.com/users/6141173/christos-panagiotakopoulos"
 
   # Google Search Console verification. Paste the HTML-tag token from
   # Search Console here — this is NOT the GA4 measurement ID (G-XXXX).
