@@ -36,7 +36,7 @@ pagination:
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
   title: Christos Panagiotakopoulos
-  description: "Christos Panagiotakopoulos — Engineering Manager at Prelude (ex-BeReal). I build backend and platform systems at scale, and the teams behind them."
+  description: "Engineering Manager at Prelude (ex-BeReal). I build backend and platform systems at scale, and the teams behind them."
   keywords: [christos panagiotakopoulos, engineering manager, software engineer, backend, platform engineering, golang, nodejs, prelude, bereal, web3, capsule social, blogchain]
   author: Christos Panagiotakopoulos
   # default image used for opengraph / twitter-cards on pages without their own cover

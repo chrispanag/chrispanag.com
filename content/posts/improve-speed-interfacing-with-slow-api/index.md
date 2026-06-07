@@ -15,7 +15,7 @@ cover:
 
 **So here's the scenario:**
 
-You have a system that interfaces with a really slow third-party API. User Bob, needs some data, so your system performs a request to the third-party API, and waits for a response. In the meantime, user Alice needs the same date and the system performs the same request to the API on behalf of her. Both users are now waiting for two requests that the only difference they have, is the execution time.
+You have a system that interfaces with a really slow third-party API. User Bob, needs some data, so your system performs a request to the third-party API, and waits for a response. In the meantime, user Alice needs the same data and the system performs the same request to the API on behalf of her. Both users are now waiting for two requests that the only difference they have, is the execution time.
 
 If a request to this API has an average response time of 1 second, both users will wait 1 second. Also, you would need to occupy resources in your system and the third-party API for more than 1 second, and for 2 seconds at most!
 
@@ -27,7 +27,7 @@ To achieve that, we'll need a **promise-cache subsystem**. This subsystem will c
 
 ### The data structure
 
-We need a data structure to store our promises inside. This data structure needs to be able to store and retrieve a new promise in one operation (O(1)). So, the best choice would be a key/value store. Javascript, offers two such structures, the [basic object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) and the [Map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) instance. The [most preferrable data structure for our use-case among the two is the Map()](https://medium.com/front-end-weekly/es6-map-vs-object-what-and-when-b80621932373).
+We need a data structure to store our promises inside. This data structure needs to be able to store and retrieve a new promise in one operation (O(1)). So, the best choice would be a key/value store. JavaScript offers two such structures, the [basic object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) and the [Map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) instance. The [most preferable data structure for our use-case among the two is the Map()](https://medium.com/front-end-weekly/es6-map-vs-object-what-and-when-b80621932373).
 
 So, let's create it:
 
@@ -124,7 +124,7 @@ async function promiseInvalidator(key: string, promise: Promise<any>) {
 
 ### More improvements
 
-This implementation has a small drawback, that can prove serious on a production system. All the requests' data, are stored within the key of our data store, highly increasing the memory requirements of our application, especially when our requests contain a lot of data. The solution to this is to use a [hash function](https://en.wikipedia.org/wiki/Hash_function) on our key, to assign a unique value to each different request, without needing to include all the actual of the request.
+This implementation has a small drawback, that can prove serious on a production system. All the requests' data, are stored within the key of our data store, highly increasing the memory requirements of our application, especially when our requests contain a lot of data. The solution to this is to use a [hash function](https://en.wikipedia.org/wiki/Hash_function) on our key, to assign a unique value to each different request, without needing to include all the actual data of the request.
 
 ```typescript
 const key = hasher(url + JSON.stringify(options));
@@ -158,10 +158,10 @@ const fetch = memoizedNodeFetch();
 })();
 ```
 
-You can see all of the above work, on its Github repository here:
+You can see all of the above work, on its GitHub repository here:
 
 [https://github.com/chrispanag/memoized-node-fetch](https://github.com/chrispanag/memoized-node-fetch)
 
 PS. 1: Although this can be used in the front-end, I can't find a very useful use-case for it, especially when you have other packages such as react-query/swr, that although they perform a different function than the above, can sometimes remove the need for it.
 
-PS. 2: Special thanks to the other two contributors of this repository ([**ferrybig**](https://github.com/ferrybig) and [**Bonjur**](https://github.com/Bonjur) for their invaluable input and suggestions!
+PS. 2: Special thanks to the other two contributors of this repository ([**ferrybig**](https://github.com/ferrybig) and [**Bonjur**](https://github.com/Bonjur)) for their invaluable input and suggestions!
