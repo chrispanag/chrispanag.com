@@ -1,0 +1,25 @@
+/* About page portrait: a circular photo floated beside the intro text,
+   rendered by the {{< profile-photo >}} shortcode (layouts/shortcodes). */
+/* Scoped under .post-content img to beat PaperMod's `.post-content img`
+   rule (border-radius: 4px; margin: 1rem 0), which is more specific than a
+   bare class selector. */
+.post-content img.about-portrait {
+    float: right;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 4px 0 18px 28px;
+    shape-outside: circle();
+    border: 1px solid var(--border);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 700px) {
+    .post-content img.about-portrait {
+        float: none;
+        display: block;
+        margin: 0 auto 20px;
+        shape-outside: none;
+    }
+}

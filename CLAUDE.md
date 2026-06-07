@@ -19,7 +19,9 @@ Requires **Hugo extended** (`brew install hugo`). Built/tested with v0.162.1+ext
 - `config.yml` — site config (YAML, **not** the Hugo default `config.toml`).
 - `content/` — all content as Hugo **page bundles** (a directory + `index.md`):
   - `posts/<slug>/index.md` — blog posts, with cover/images co-located in the same dir.
-  - `about.md`, `chrispanag-on-the-web/` — standalone single pages.
+  - `about/index.md` — the About page bundle; co-locates `profile.jpeg`, rendered as a
+    circular portrait by the `{{< profile-photo >}}` shortcode (resized + fingerprinted).
+  - `chrispanag-on-the-web/` — standalone single page.
 - `archetypes/default.md` — template for `hugo new` (defaults `draft: true`).
 - `static/` — favicons, profile image; served at site root.
 - `themes/PaperMod/` — theme, pinned as a **git submodule** (not vendored).
@@ -32,7 +34,7 @@ Requires **Hugo extended** (`brew install hugo`). Built/tested with v0.162.1+ext
 - Post front matter: `author`, `title`, `date`, `description`, `tags`, `categories`,
   optional `cover.image`. See existing posts for the pattern.
 - The About page **timeline** is a custom component, not plain markdown: entries live
-  inside `{{< timeline >}} … {{< /timeline >}}` in `content/about.md`, ordered oldest
+  inside `{{< timeline >}} … {{< /timeline >}}` in `content/about/index.md`, ordered oldest
   first, each as `**<Date>** <description>` with a bold date and **no trailing colon**
   (the date renders as a label). Component: `layouts/shortcodes/timeline.html` +
   `assets/css/extended/timeline.css`. To add an entry, use the `add-timeline-entry` skill.

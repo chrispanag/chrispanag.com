@@ -1,0 +1,8 @@
+{{- /* Circular portrait for the About page. Reads the co-located profile.jpeg
+       page resource, resizes it (fingerprinted output) and renders it with the
+       .about-portrait style from assets/css/extended/about.css. */ -}}
+{{- with .Page.Resources.GetMatch "profile.jpeg" -}}
+  {{- $img := .Fill "320x320 Center" -}}
+  <img class="about-portrait" src="{{ $img.RelPermalink }}" width="160" height="160"
+       alt="{{ site.Params.author | default "profile picture" }}" />
+{{- end -}}
