@@ -1,0 +1,4 @@
+{{- /* Link the web app manifest. PaperMod's head emits the favicon/apple-touch
+       links but not a manifest, so the android-chrome icons are only used once
+       this is present. */ -}}
+<link rel="manifest" href="{{ "site.webmanifest" | absURL }}">

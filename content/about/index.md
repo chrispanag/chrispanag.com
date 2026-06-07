@@ -8,6 +8,8 @@ hidemeta: true
 comments: false
 ---
 
+{{< profile-photo >}}
+
 I'm a builder. I've spent my career building products and the systems behind them: platform infrastructure at scale at BeReal, and before that web3 products and chatbot platforms used by millions.
 
 Now I own the technical direction at [Prelude](https://prelude.so), where I lead the engineering team and the architecture behind its phone verification and anti-fraud systems. I'm responsible for what we ship and how it holds up at scale, and I still write code alongside the team.
