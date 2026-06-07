@@ -9,8 +9,8 @@ ShowToc: true
 TocOpen: true
 cover:
     image: "speech.jpeg"
-    caption: "test"
-    alt: "test"
+    caption: "Panel discussion at NEARCON 2022, Lisbon — representing Capsule Social"
+    alt: "Christos Panagiotakopoulos speaking on a panel at NEARCON 2022 in Lisbon"
     relative: true # To use relative path for cover image, used in hugo Page-bundles
 ---
 
