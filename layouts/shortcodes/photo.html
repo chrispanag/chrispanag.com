@@ -11,7 +11,7 @@
 {{- with .Page.Resources.GetMatch $src -}}
   {{- $img := . | resources.Fingerprint -}}
   <figure>
-    <img loading="lazy" src="{{ $img.RelPermalink }}" width="{{ .Width }}" height="{{ .Height }}"
+    <img class="photo" loading="lazy" src="{{ $img.RelPermalink }}" width="{{ .Width }}" height="{{ .Height }}"
          alt="{{ $.Get "alt" }}" />
     {{- with $.Get "caption" }}<figcaption>{{ . }}</figcaption>{{ end -}}
   </figure>
