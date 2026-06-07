@@ -1,0 +1,42 @@
+{{- /* A single card on the "Me on the web" page. Used inside {{< web-grid >}}.
+
+       Params:
+         url     (required)  destination link
+         title   (required)  card heading
+         kicker  (optional)  small label above the title (outlet / venue / date)
+         image   (optional)  co-located page-bundle resource, cropped to a 16:9 cover
+         icon    (optional)  placeholder glyph shown when there is no image
+                             (article | tv | mic | play | globe; default "article")
+       Inner = the description (markdown, rendered inline so it stays inside the card). */ -}}
+{{- $url := .Get "url" -}}
+{{- $title := .Get "title" -}}
+{{- $kicker := .Get "kicker" -}}
+{{- $icon := .Get "icon" | default "article" -}}
+{{- $glyphs := dict
+  "article" `<path d="M4 4h12a1 1 0 0 1 1 1v13a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2V4z"/><path d="M17 8h2a1 1 0 0 1 1 1v9a2 2 0 0 1-2 2"/><path d="M8 8h5M8 12h5M8 16h3"/>`
+  "tv" `<rect x="2" y="7" width="20" height="13" rx="2"/><path d="m7 7 5-4 5 4"/>`
+  "mic" `<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v4M8 21h8"/>`
+  "play" `<circle cx="12" cy="12" r="9"/><path d="m10 8.5 5.5 3.5L10 15.5z" fill="currentColor" stroke="none"/>`
+  "globe" `<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z"/>`
+-}}
+<a class="web-card" href="{{ $url }}" target="_blank" rel="noopener noreferrer">
+  {{- with .Get "image" -}}
+    {{- with $.Page.Resources.GetMatch . -}}
+      {{- $cover := .Fill "640x360 Center" -}}
+      <img class="web-card__cover" src="{{ $cover.RelPermalink }}" width="640" height="360"
+           loading="lazy" alt="{{ $title }}">
+    {{- end -}}
+  {{- else -}}
+    <span class="web-card__cover web-card__cover--ph" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+           stroke-linecap="round" stroke-linejoin="round">{{ index $glyphs $icon | safeHTML }}</svg>
+    </span>
+  {{- end -}}
+  <span class="web-card__body">
+    {{- with $kicker }}<span class="web-card__kicker">{{ . }}</span>{{ end -}}
+    <span class="web-card__title">{{ $title }}<svg class="web-card__arrow" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span>
+    {{- with .Inner }}<span class="web-card__desc">{{ $.Page.RenderString (dict "display" "inline") (trim . "\n ") }}</span>{{ end -}}
+  </span>
+</a>

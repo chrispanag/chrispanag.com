@@ -1,0 +1,7 @@
+{{- /* A single profile pill. Used inside {{< web-profiles >}}.
+       Params: name (required), url (required), icon (PaperMod svg name, e.g.
+       github | linkedin | x | youtube; unknown names fall back to a link glyph). */ -}}
+<a class="web-profile" href="{{ .Get "url" }}" target="_blank" rel="noopener noreferrer me">
+  <span class="web-profile__icon">{{ partial "svg.html" (dict "name" (.Get "icon")) }}</span>
+  <span>{{ .Get "name" }}</span>
+</a>
