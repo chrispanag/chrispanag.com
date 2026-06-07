@@ -1,4 +1,5 @@
 ---
+title: "Christos on the web"
 layout: "single"
 url: "/chrispanag-on-the-web"
 summary: Christos on the web
