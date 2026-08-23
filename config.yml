@@ -18,16 +18,28 @@ minify:
   minifyOutput: true
 
 # llms.txt: a plain-text index of the site for LLM consumption.
-# See https://llmstxt.org/ — generated from layouts/llms.txt in the PaperMod theme.
+# See https://llmstxt.org/ — generated from layouts/home.llms.txt (that exact name
+# matters, see CLAUDE.md), which calls the section printer the theme defines.
 outputFormats:
   llms:
     mediaType: "text/plain"
     baseName: "llms"
     isPlainText: true
     notAlternative: true
+  # openapi.json: an OpenAPI 3.1 description of the machine-readable endpoints this
+  # site serves (llms.txt, sitemap.xml, index.json, index.xml) plus its 404 contract.
+  # Generated from layouts/home.openapi.json (that exact name matters, see CLAUDE.md).
+  # isPlainText keeps html/template from escaping the JSON; notAlternative keeps it
+  # out of the <link rel="alternate"> list in <head>.
+  openapi:
+    mediaType: "application/json"
+    baseName: "openapi"
+    isPlainText: true
+    notAlternative: true
 
 outputs:
-  home: ["HTML", "RSS", "llms", "JSON"] # JSON powers the Fuse.js search index (index.json)
+  # JSON powers the Fuse.js search index (index.json); do not remove it.
+  home: ["HTML", "RSS", "llms", "JSON", "openapi"]
 
 pagination:
   disableAliases: false
@@ -42,9 +54,27 @@ params:
   # default image used for opengraph / twitter-cards on pages without their own cover
   images: ["profile.jpeg"]
 
-  # Mark up the site as a Person (not an Organization) for richer structured data
+  # Mark up the site as a Person (not an Organization) for richer structured data.
+  # Everything below feeds the home page's JSON-LD graph, emitted by the project's
+  # copy of layouts/_partials/templates/schema_json.html. The home page is deliberately
+  # sparse for readers, so this is how an agent or a search engine learns who the site
+  # is about. Keep it factual: it is a public claim about a real person.
   schema:
     publisherType: "Person"
+    jobTitle: "Engineering Manager"
+    worksFor:
+      name: "Prelude"
+      url: "https://prelude.so"
+    homeLocation: "Paris, France"
+    knowsAbout:
+      - "Backend engineering"
+      - "Platform engineering"
+      - "Distributed systems"
+      - "Go"
+      - "Node.js"
+      - "API design"
+      - "Phone verification"
+      - "Anti-fraud systems"
   DateFormat: "January 2, 2006"
   defaultTheme: auto # dark, light
   disableThemeToggle: false

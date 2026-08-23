@@ -1,0 +1,57 @@
+{{- define "main" }}
+
+{{- /* PaperMod's own 404 is a single absolutely-positioned "404" glyph and nothing
+       else. The status code was already a real 404 (DigitalOcean App Platform serves
+       this file as the error document), but the body gave an agent no way to recover.
+
+       This override keeps a large 404 as the visual anchor and adds a short, link-dense
+       recovery body: the machine-readable indexes first, then the human pages, built
+       from menu.main in config.yml so the two cannot drift apart. */}}
+
+<div class="not-found-page">
+  <p class="not-found-code" aria-hidden="true">404</p>
+
+  {{- /* `post-content md-content` is the pair the theme uses wherever it renders
+         markdown; `md-content` carries the paragraph spacing, list styling and link
+         underlines. */}}
+  <div class="post-content md-content not-found-content">
+    <h1>404: page not found</h1>
+
+    <p>
+      There is nothing at this address. Every page that does exist is listed in the
+      indexes below.
+    </p>
+
+    <h2>Machine-readable indexes</h2>
+
+    <ul>
+      <li><a href="{{ "llms.txt" | absURL }}">/llms.txt</a>: plain-text index of every page on this site.</li>
+      <li><a href="{{ "sitemap.xml" | absURL }}">/sitemap.xml</a>: every URL, with last-modified dates.</li>
+      <li><a href="{{ "index.json" | absURL }}">/index.json</a>: the full-text search index, as JSON.</li>
+      <li><a href="{{ "index.xml" | absURL }}">/index.xml</a>: the RSS feed for the blog.</li>
+      <li><a href="{{ "openapi.json" | absURL }}">/openapi.json</a>: an OpenAPI description of the endpoints above.</li>
+    </ul>
+
+    <h2>Pages</h2>
+
+    <ul>
+      <li><a href="{{ "" | absURL }}">Home</a></li>
+      {{- range site.Menus.main }}
+      {{- /* menu.main in config.yml spells these without a trailing slash ("/about").
+             That resolves, but the canonical URL in sitemap.xml and llms.txt is
+             "/about/", so normalize here rather than hand an agent two spellings of
+             the same page. Same rule the theme applies in _partials/header.html, with
+             two extra guards so a future external or file-pointing menu entry is left
+             alone. Note `.Page` is nil for these entries: config.yml defines them with
+             `url:`, not `pageRef:`, so `.Page.Permalink` is not an option here. */}}
+      {{- $href := .URL }}
+      {{- if and (not (urls.Parse $href).IsAbs) (not (strings.HasSuffix $href "/")) (not (path.Ext $href)) }}
+      {{- $href = printf "%s/" $href }}
+      {{- end }}
+      <li><a href="{{ $href | absURL }}">{{ .Name | title }}</a></li>
+      {{- end }}
+    </ul>
+  </div>
+</div>
+
+{{- end }}{{/* end main */}}

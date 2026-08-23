@@ -2,3 +2,22 @@
        links but not a manifest, so the android-chrome icons are only used once
        this is present. */ -}}
 <link rel="manifest" href="{{ "site.webmanifest" | absURL }}">
+
+{{- /* Point agents at the site's llms.txt overview and OpenAPI description. The
+       llms.txt v2 format (https://llmstxt.org/) recommends rel="describedby" for the
+       first; the second is the same discovery hint in the shape OpenAPI clients look
+       for. Both are emitted on every page, since an agent may land on any of them. */ -}}
+<link rel="describedby" type="text/plain" href="{{ "llms.txt" | absURL }}">
+<link rel="service-desc" type="application/json" href="{{ "openapi.json" | absURL }}">
+
+{{- /* Keep the 404 body out of search results. A path that 404s is not indexed
+       anyway, but the error document is also a real file, so GET /404.html is a 200
+       that self-canonicalizes: without this, a page whose only content is "404: page
+       not found" is indexable like any other. The theme's head already emitted
+       `robots: index, follow` from site params, and Hugo's 404 page has no front
+       matter to set `robotsNoIndex` in, so this is a second robots tag; when they
+       conflict, crawlers apply the most restrictive one. `follow` is left implicit on
+       purpose, so the recovery links below are still crawled. */ -}}
+{{- if eq .Kind "404" }}
+<meta name="robots" content="noindex">
+{{- end }}

@@ -1,0 +1,53 @@
+{{- /* Project override of PaperMod's llms.txt output.
+
+       The theme emits an H1 followed straight by the H2 file lists. The llms.txt v2
+       format (https://llmstxt.org/) puts, in this order: an H1 with the site name, a
+       blockquote summary, zero or more non-heading markdown sections, then the H2 file
+       lists. This template adds the missing blockquote and details paragraph, and an
+       "## Optional" section, which is the format's conventional home for secondary
+       links an agent can skip when it needs a shorter context.
+
+       Named `home.llms.txt`, not `llms.txt`, and that matters: the explicit
+       `<kind>.<format>.<ext>` form outranks the theme's `llms.txt` without *shadowing*
+       it, so the theme's `{{ define "llms_print_section" }}` further down is still
+       parsed and can be called below. Naming this file `llms.txt` would hide the
+       theme's copy entirely and force this one to carry its own duplicate of that
+       recursive printer. */ -}}
+
+{{- /* Main template starts here */ -}}
+# {{ site.Title }}
+
+> {{ site.Params.description }}
+
+This is a statically generated personal site. Every page below is server-rendered HTML
+that can be read without executing JavaScript, and there is no write API and no
+authentication. Unknown paths return a real HTTP 404 with a body that links back to
+these indexes.
+
+{{- /* Pages not in any section. The theme emits these as a bare list under the H1;
+       here they get an H2 of their own, so that every file list in the document sits
+       under a heading the way the format describes. */ -}}
+{{- $orphans := slice -}}
+{{- range $p := where site.RegularPages "Section" "" -}}
+  {{- if and (not $p.Params.searchHidden) (ne $p.Layout `archives`) (ne $p.Layout `search`) -}}
+    {{- $orphans = $orphans | append $p -}}
+  {{- end -}}
+{{- end -}}
+{{- with $orphans }}
+
+## Pages
+{{ range . }}
+- [{{ .Title }}]({{ .Permalink }})
+{{- end }}
+{{- end -}}
+
+{{- range site.Sections -}}
+{{- template "llms_print_section" (dict "section" . "depth" 1) -}}
+{{- end }}
+
+## Optional
+
+- [Search index]({{ "index.json" | absURL }}): the full plain text of every page above, as JSON, in a single request.
+- [OpenAPI description]({{ "openapi.json" | absURL }}): the endpoints of this site described as OpenAPI 3.1.
+- [RSS feed]({{ "index.xml" | absURL }}): new blog posts.
+- [Sitemap]({{ "sitemap.xml" | absURL }}): every URL on the site with its last-modified date.
