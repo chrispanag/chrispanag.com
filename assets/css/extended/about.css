@@ -31,3 +31,9 @@
 .post-content img.photo {
     height: auto;
 }
+
+/* The photo is wrapped in <picture> (AVIF + fallback); keep the wrapper from
+   introducing inline-baseline space below the image. */
+.post-content figure > picture {
+    display: block;
+}
