@@ -12,7 +12,7 @@ hugo                                      # production build → ./public
 hugo new posts/<slug>/index.md            # new post (archetype sets draft: true)
 ```
 
-Requires **Hugo extended** (`brew install hugo`). Built/tested with v0.162.1+extended.
+Requires **Hugo extended** (`brew install hugo`). Built/tested with v0.165.0+extended.
 
 ## Architecture
 
