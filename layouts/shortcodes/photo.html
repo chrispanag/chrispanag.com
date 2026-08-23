@@ -1,18 +1,26 @@
-{{- /* Captioned image for page bundles. Resolves the named co-located resource and
-       emits an ABSOLUTE, fingerprinted URL through the resource pipeline. The built-in
-       `figure` shortcode emits the `src` verbatim, so a relative src like
-       "prelude-team.jpg" 404s on pages served without a trailing slash (e.g. /about):
-       the browser resolves it against the site root, not the page bundle. Going through
-       .RelPermalink yields /about/<name>.<hash>.jpg, which works everywhere and busts
-       the CDN cache on update. Mirrors the profile-photo shortcode pattern.
+{{- /* Captioned image for page bundles. Resolves the named co-located resource, downsizes
+       it to twice the 720px content width (--main-width) and serves AVIF with a
+       same-format fallback through <picture>. AVIF encoding needs Hugo >= 0.162.
+
+       Both variants go through the resource pipeline, so each URL is absolute and carries
+       a content hash (…_hu_<hash>.<ext>). That matters twice over: the built-in `figure`
+       shortcode emits `src` verbatim, so a relative src like "prelude-team.jpg" 404s on
+       pages served without a trailing slash (e.g. /about) because the browser resolves it
+       against the site root rather than the page bundle; and the hash busts the CDN cache
+       whenever the source image changes.
 
        Params: src (required, matches a co-located resource), alt, caption. */ -}}
 {{- $src := .Get "src" -}}
 {{- with .Page.Resources.GetMatch $src -}}
-  {{- $img := . | resources.Fingerprint -}}
+  {{- $w := cond (gt .Width 1440) 1440 .Width -}}
+  {{- $img := .Resize (printf "%dx" $w) -}}
+  {{- $avif := .Resize (printf "%dx avif" $w) -}}
   <figure>
-    <img class="photo" loading="lazy" src="{{ $img.RelPermalink }}" width="{{ .Width }}" height="{{ .Height }}"
-         alt="{{ $.Get "alt" }}" />
+    <picture>
+      <source type="image/avif" srcset="{{ $avif.RelPermalink }}" />
+      <img class="photo" loading="lazy" src="{{ $img.RelPermalink }}"
+           width="{{ $img.Width }}" height="{{ $img.Height }}" alt="{{ $.Get "alt" }}" />
+    </picture>
     {{- with $.Get "caption" }}<figcaption>{{ . }}</figcaption>{{ end -}}
   </figure>
 {{- else -}}

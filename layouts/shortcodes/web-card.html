@@ -22,9 +22,16 @@
 <a class="web-card" href="{{ $url }}" target="_blank" rel="noopener noreferrer">
   {{- with .Get "image" -}}
     {{- with $.Page.Resources.GetMatch . -}}
+      {{- /* AVIF (Hugo >= 0.162) with a same-format fallback; roughly a third of the
+             bytes across the grid. The <picture> wrapper is made a block in web.css so
+             it stays transparent to the card's flex column. */ -}}
       {{- $cover := .Fill "640x360 Center" -}}
-      <img class="web-card__cover" src="{{ $cover.RelPermalink }}" width="640" height="360"
-           loading="lazy" alt="{{ $title }}">
+      {{- $coverAvif := .Fill "640x360 Center avif" -}}
+      <picture>
+        <source type="image/avif" srcset="{{ $coverAvif.RelPermalink }}">
+        <img class="web-card__cover" src="{{ $cover.RelPermalink }}" width="640" height="360"
+             loading="lazy" alt="{{ $title }}">
+      </picture>
     {{- end -}}
   {{- else -}}
     <span class="web-card__cover web-card__cover--ph" aria-hidden="true">

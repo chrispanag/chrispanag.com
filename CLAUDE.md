@@ -12,7 +12,10 @@ hugo                                      # production build → ./public
 hugo new posts/<slug>/index.md            # new post (archetype sets draft: true)
 ```
 
-Requires **Hugo extended** (`brew install hugo`). Built/tested with v0.162.1+extended.
+Requires **Hugo extended** (`brew install hugo`). Built/tested with v0.165.0+extended.
+**Hugo >= 0.162 is a hard floor**: the `photo` and `web-card` shortcodes emit AVIF, which
+older versions cannot encode. Production pins its own version via the `HUGO_VERSION`
+build-time env var in the DigitalOcean App Platform app spec — bump it there, not here.
 
 ## Architecture
 

@@ -31,6 +31,12 @@
 }
 
 /* Cover image / placeholder */
+/* The cover img is wrapped in <picture> (AVIF + fallback). Blockify the wrapper so it
+   behaves like the img used to as a direct flex child of the card. */
+.post-content a.web-card > picture {
+    display: block;
+}
+
 .post-content .web-card__cover {
     display: block;
     width: 100%;
