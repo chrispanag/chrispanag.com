@@ -32,8 +32,8 @@ build-time env var in the DigitalOcean App Platform app spec — bump it there, 
 - `archetypes/default.md` — template for `hugo new` (defaults `draft: true`).
 - `layouts/` — project overrides of theme templates:
   - `404.html` — the recovery page (see Agent readiness).
-  - `llms.txt` — **forked** from the theme, to add the llmstxt.org blockquote and the
-    `## Optional` section; see Gotchas.
+  - `home.llms.txt` — adds the llmstxt.org blockquote and `## Optional` section, and
+    calls the theme's section printer rather than copying it (see Gotchas).
   - `home.openapi.json` — generates `/openapi.json`.
   - `_partials/templates/schema_json.html` — **forked** from the theme; see Gotchas.
 - `static/` — favicons, profile image; served at site root.
@@ -109,11 +109,16 @@ reports both as PENDING with the fix, rather than failing.
 - **`config.yml`, not TOML** — edit the YAML file; there is no `config.toml`.
 - The home page emits custom **`llms.txt`** and **`openapi.json`** outputs
   (`outputFormats` + `outputs.home` in `config.yml`), alongside HTML, RSS and JSON.
-- **Custom output format templates need the explicit `<kind>.<format>.<ext>` name.**
-  `layouts/openapi.json` does *not* work: Hugo matches it against the theme's
-  `layouts/index.json` and the `openapi` output silently becomes a copy of the search
-  index. Name it `layouts/home.openapi.json`. (`llms.txt` gets away with the short form
-  only because nothing else claims `.txt` on the home page.)
+- **Name custom output format templates `<kind>.<format>.<ext>`.** Both project
+  templates do (`home.openapi.json`, `home.llms.txt`), for two separate reasons:
+  - `layouts/openapi.json` does *not* work at all — Hugo matches it against the theme's
+    `layouts/index.json`, and the `openapi` output silently becomes a copy of the
+    search index.
+  - `layouts/llms.txt` would work, but it **shadows** the theme's `layouts/llms.txt`,
+    which means the theme's `{{ define "llms_print_section" }}` is never parsed and the
+    project template has to carry its own copy of that recursive printer.
+    `home.llms.txt` outranks the theme's file without hiding it, so the define stays
+    callable and there is nothing to keep in sync.
 - **Site search** needs `JSON` in `outputs.home` (generates `index.json`) plus
   `content/search.md` with `layout: search`. Don't drop `JSON` from `outputs.home`.
 - **Markdown typography lives on `.md-content`, not `.post-content`.** Paragraph
@@ -126,18 +131,17 @@ reports both as PENDING with the fix, rather than failing.
   and `.md-content a` adds an underline, so scope overrides under `.post-content` /
   `.md-content` (a bare class loses on specificity). Reuse the theme's icon set with
   `{{ partial "svg.html" (dict "name" "github") }}` (unknown names fall back to a link glyph).
-- **Two templates are forks that carry theme code verbatim, and both need re-syncing
-  when the PaperMod submodule is bumped.** Hugo has no way to override part of a
-  template, so each copies the theme's version and changes one region. Diff the carried
-  region against the theme's file after a bump:
-  - `layouts/_partials/templates/schema_json.html` — only the `.IsHome` branch is ours.
-    Everything from `{{- else if (or .IsPage .IsSection) }}` onward is the theme's
-    (BreadcrumbList + BlogPosting). The fork exists because the home branch set
-    `Person.image` to `favicon.ico` rather than the profile photo, and carried almost
-    no detail. `tests/run.sh` asserts posts and sections still emit their schema, which
-    is what breaks first if the re-sync is missed.
-  - `layouts/llms.txt` — the recursive `llms_print_section` printer is the theme's,
-    unchanged; the H1/blockquote preamble and the `## Optional` section are ours.
+- **`layouts/_partials/templates/schema_json.html` is a fork, and needs re-syncing
+  when the PaperMod submodule is bumped.** Only the `.IsHome` branch is ours;
+  everything from `{{- else if (or .IsPage .IsSection) }}` onward is the theme's
+  (BreadcrumbList + BlogPosting), carried verbatim. Diff that tail against the theme's
+  file after a bump. `tests/run.sh` asserts posts and sections still emit their schema,
+  which is what breaks first if the re-sync is missed. The fork exists because the home
+  branch set `Person.image` to `favicon.ico` rather than the profile photo and carried
+  almost no detail, and a partial cannot be overridden a branch at a time. (A
+  `module.mounts` alias can avoid the fork by re-mounting the theme's file under another
+  name, but declaring any mount replaces Hugo's defaults, so every source directory has
+  to be restated in `config.yml` — traded away deliberately.)
 - **Do not give `content/_index.md` a body.** Besides changing the home page design,
   it would hand the home page a `.Summary`, and PaperMod's opengraph and twitter_cards
   partials resolve `or .Description .Summary site.Params.description` — so the body

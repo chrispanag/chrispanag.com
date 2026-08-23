@@ -18,7 +18,8 @@ minify:
   minifyOutput: true
 
 # llms.txt: a plain-text index of the site for LLM consumption.
-# See https://llmstxt.org/ — generated from layouts/llms.txt in the PaperMod theme.
+# See https://llmstxt.org/ — generated from layouts/home.llms.txt (that exact name
+# matters, see CLAUDE.md), which calls the section printer the theme defines.
 outputFormats:
   llms:
     mediaType: "text/plain"

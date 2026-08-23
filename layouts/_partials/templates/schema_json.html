@@ -36,10 +36,14 @@
   {{- end -}}
 {{- end -}}
 
-{{- /* The same image opengraph uses, so the two never disagree. */ -}}
-{{- $image := site.Params.assets.favicon | default "favicon.ico" -}}
-{{- with site.Params.images -}}
-  {{- $image = index . 0 -}}
+{{- /* Resolve the image through the theme's own helper, which is what opengraph.html
+       and twitter_cards.html use (and what this file's untouched tail uses for
+       BlogPosting). Hand-rolling it here is how the JSON-LD image and og:image drift
+       apart. The helper returns an empty slice when nothing resolves, hence the
+       favicon fallback the theme's home branch used. */ -}}
+{{- $image := site.Params.assets.favicon | default "favicon.ico" | absURL -}}
+{{- with index (partial "templates/_funcs/get-page-images" .) 0 -}}
+  {{- $image = .Permalink -}}
 {{- end -}}
 
 {{- $person := dict
@@ -47,7 +51,7 @@
       "@id" $personID
       "name" site.Title
       "url" site.Home.Permalink
-      "image" ($image | absURL)
+      "image" $image
       "description" (site.Params.description | plainify)
       "sameAs" $sameAs -}}
 

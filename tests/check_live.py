@@ -8,17 +8,21 @@ tests/run.sh checks what the build produces; this checks what the edge actually
 serves, which is the only place status codes, content types and Vary headers exist.
 Deploys are out of band (DigitalOcean App Platform), so run this after one lands.
 
-Two checks are reported as PENDING rather than failures: markdown content negotiation
-and JSON error responses cannot be satisfied by a static origin and need an edge
-change. See the notes printed alongside them. Exit code covers the real checks only.
+Three checks are reported as PENDING rather than failures, because this repo cannot
+make them true on its own: markdown content negotiation and JSON error responses need
+an edge change, and the sparse home page is a deliberate design decision. See the notes
+printed alongside them. The exit code covers the real checks only.
+
+Shared parsing and constants live in common.py. Standard library only.
 """
 
 import json
-import re
 import sys
 import urllib.error
 import urllib.request
-from urllib.parse import urljoin
+
+from common import (BASE_URL, INDEX_FILES, MAX_404_BYTES, RECOVERY_TARGETS, Page,
+                    Report, check_llms_shape, check_person_node, graph_nodes, json_ld)
 
 # Long enough to be unmistakably absent, stable enough to be reproducible.
 MISSING_PATH = "/this-path-does-not-exist-agent-readiness-check"
@@ -39,90 +43,45 @@ def fetch(url, accept=None, method="GET"):
         return exc.code, dict(exc.headers), exc.read()
 
 
-def visible_text(html: str) -> str:
-    stripped = re.sub(r"(?is)<(script|style|svg|noscript)[^>]*>.*?</\1>", " ", html)
-    return re.sub(r"\s+", " ", re.sub(r"(?s)<[^>]+>", " ", stripped)).strip()
-
-
-class Report:
-    def __init__(self):
-        self.passed = 0
-        self.failures = []
-        self.pending = []
-
-    def check(self, name, ok, detail=""):
-        if ok:
-            self.passed += 1
-            print(f"  ok      {name}")
-        else:
-            self.failures.append(name)
-            print(f"  FAIL    {name}" + (f"\n            {detail}" if detail else ""))
-
-    def note(self, name, ok, detail):
-        """A check that this repo cannot satisfy on its own."""
-        if ok:
-            self.passed += 1
-            print(f"  ok      {name}")
-        else:
-            self.pending.append(name)
-            print(f"  PENDING {name}\n            {detail}")
-
-
 def main():
-    base = (sys.argv[1] if len(sys.argv) > 1 else "https://chrispanag.com").rstrip("/")
+    base = (sys.argv[1] if len(sys.argv) > 1 else BASE_URL).rstrip("/")
     r = Report()
     print(f"checking {base}\n")
 
     print("home page")
     status, headers, body = fetch(base + "/")
     html = body.decode("utf-8", "replace")
+    page = Page(html)
     r.check("GET / returns 200", status == 200, f"got {status}")
     r.check("serves text/html", "text/html" in headers.get("Content-Type", ""))
-    r.check("has an h1 in the raw HTML", "<h1" in html.lower())
-    text = visible_text(html)
+    r.check("has an h1 in the raw HTML", bool(page.h1s), f"got {page.h1s!r}")
     r.note(
         "500+ characters of text without JavaScript",
-        len(text) >= 500,
-        f"got {len(text)}. The home page is deliberately the bare profile card, which "
-        "is the site's visual identity, so it carries little text for crawlers. The "
-        "content an agent needs is one hop away in /llms.txt and /index.json, both "
+        len(page.text) >= 500,
+        f"got {len(page.text)}. The home page is deliberately the bare profile card, "
+        "which is the site's visual identity, so it carries little text for crawlers. "
+        "The content an agent needs is one hop away in /llms.txt and /index.json, both "
         "linked from every page via rel=describedby.",
     )
 
     print("\nhome page structured data")
-    ld = [
-        json.loads(b)
-        for b in re.findall(
-            r"(?is)<script[^>]*application/ld\+json[^>]*>(.*?)</script>", html
-        )
-    ]
+    ld = json_ld(html)
     r.check("home serves one JSON-LD block", len(ld) == 1, f"got {len(ld)}")
-    graph = ld[0].get("@graph", []) if ld else []
-    by_type = {n.get("@type"): n for n in graph}
-    r.check("declares a ProfilePage and a Person",
-            {"ProfilePage", "Person"} <= set(by_type), f"got {list(by_type)}")
-    person = by_type.get("Person", {})
-    r.check("Person.image is the profile photo, not the favicon",
-            "favicon" not in person.get("image", "favicon"), f"got {person.get('image')!r}")
-    for field in ("jobTitle", "worksFor", "sameAs"):
-        r.check(f"Person.{field} is present", bool(person.get(field)))
+    by_type = graph_nodes(ld)
+    has_both = {"ProfilePage", "Person"} <= set(by_type)
+    r.check("declares a ProfilePage and a Person", has_both, f"got {list(by_type)}")
+    if has_both:
+        check_person_node(r, by_type["Person"])
 
     print("\nmachine-readable files")
-    expected_types = {
-        "/llms.txt": "text/plain",
-        "/robots.txt": "text/plain",
-        "/sitemap.xml": "xml",
-        "/index.xml": "xml",
-        "/index.json": "json",
-        "/openapi.json": "json",
-    }
     bodies = {}
-    for path, want_type in expected_types.items():
+    for path, want_type in INDEX_FILES.items():
         status, headers, body = fetch(base + path)
         bodies[path] = body
         content_type = headers.get("Content-Type", "")
         r.check(f"GET {path} returns 200", status == 200, f"got {status}")
-        r.check(f"{path} serves {want_type}", want_type in content_type, f"got {content_type!r}")
+        r.check(f"{path} serves {want_type}", want_type in content_type,
+                f"got {content_type!r}")
 
     print("\nopenapi.json contents")
     try:
@@ -131,17 +90,13 @@ def main():
         r.check("is OpenAPI 3.1", str(spec.get("openapi", "")).startswith("3.1"))
         r.check("declares paths", bool(spec.get("paths")))
         served = spec.get("servers", [{}])[0].get("url", "")
-        r.check("servers[0].url matches this host", served.rstrip("/") == base, f"got {served!r}")
-    except (json.JSONDecodeError, KeyError, IndexError) as exc:
+        r.check("servers[0].url matches this host", served.rstrip("/") == base,
+                f"got {served!r}")
+    except (json.JSONDecodeError, IndexError) as exc:
         r.check("parses as JSON", False, str(exc))
-        spec = {}
 
     print("\nllms.txt contents")
-    llms = bodies["/llms.txt"].decode("utf-8", "replace")
-    lines = [ln for ln in llms.splitlines() if ln.strip()]
-    r.check("starts with an H1", bool(lines) and lines[0].startswith("# "))
-    r.check("has a blockquote summary", len(lines) > 1 and lines[1].startswith("> "))
-    links = re.findall(r"^- \[[^\]]+\]\(([^)]+)\)", llms, re.MULTILINE)
+    links = check_llms_shape(r, bodies["/llms.txt"].decode("utf-8", "replace"))
     r.check("lists pages", bool(links))
     broken = []
     for link in links:
@@ -151,15 +106,16 @@ def main():
     r.check("every llms.txt link returns 200", not broken, "; ".join(broken))
 
     print("\n404 handling")
-    status, headers, body = fetch(base + MISSING_PATH)
-    page = body.decode("utf-8", "replace")
+    status, _, body = fetch(base + MISSING_PATH)
+    text = body.decode("utf-8", "replace")
     r.check("unknown path returns 404", status == 404, f"got {status}")
-    r.check("404 body is not an app shell", len(body) < 20_000, f"got {len(body)} bytes")
-    for target in ("llms.txt", "sitemap.xml", "openapi.json"):
-        r.check(f"404 body points at {target}", target in page)
+    r.check("404 body is not an app shell", len(body) < MAX_404_BYTES,
+            f"got {len(body)} bytes")
+    for target in RECOVERY_TARGETS:
+        r.check(f"404 body points at {target}", target in text)
 
     print("\nedge behavior (needs a change outside this repo)")
-    status, headers, _ = fetch(base + "/", accept="text/markdown")
+    _, headers, _ = fetch(base + "/", accept="text/markdown")
     content_type = headers.get("Content-Type", "")
     vary = headers.get("Vary", "")
     r.note(
@@ -175,7 +131,7 @@ def main():
         f"got Vary: {vary!r}. Without it a CDN can serve the cached HTML variant to an "
         "agent asking for markdown. The same Cloudflare toggle sets it.",
     )
-    status, headers, _ = fetch(base + MISSING_PATH, accept="application/json")
+    _, headers, _ = fetch(base + MISSING_PATH, accept="application/json")
     content_type = headers.get("Content-Type", "")
     r.note(
         "JSON Accept on an error returns JSON",
@@ -185,12 +141,7 @@ def main():
         "rendered as JSON by an edge function (Cloudflare Worker) in front of it.",
     )
 
-    print(f"\n{r.passed} passed, {len(r.failures)} failed, {len(r.pending)} pending")
-    for name in r.failures:
-        print(f"  FAILED:  {name}")
-    for name in r.pending:
-        print(f"  PENDING: {name}")
-    return 1 if r.failures else 0
+    return r.summary()
 
 
 if __name__ == "__main__":

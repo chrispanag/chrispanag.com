@@ -1,36 +1,18 @@
-{{- /* Project override of PaperMod's layouts/llms.txt.
+{{- /* Project override of PaperMod's llms.txt output.
 
        The theme emits an H1 followed straight by the H2 file lists. The llms.txt v2
        format (https://llmstxt.org/) puts, in this order: an H1 with the site name, a
        blockquote summary, zero or more non-heading markdown sections, then the H2 file
-       lists. This override adds the missing blockquote and details paragraph, and an
+       lists. This template adds the missing blockquote and details paragraph, and an
        "## Optional" section, which is the format's conventional home for secondary
        links an agent can skip when it needs a shorter context.
 
-       The recursive section printer below is the theme's, unchanged. */ -}}
-
-{{- /* Recursive printer for sections */ -}}
-{{- define "llms_print_section" -}}
-{{- $section := .section -}}
-{{- $depth := .depth -}}
-{{- if or (gt (len $section.RegularPages) 0) (gt (len $section.Sections) 0) -}}
-{{- $hashes := strings.Repeat (add $depth 1) "#" }}
-
-{{ printf "%s %s" $hashes $section.Title }}
-
-{{- /* Pages in this section */ -}}
-{{- range $p := $section.RegularPages }}
-  {{- if and (not $p.Params.searchHidden) (ne $p.Layout `archives`) (ne $p.Layout `search`) }}
-- [{{ $p.Title }}]({{ $p.Permalink }})
-  {{- end -}}
-{{- end -}}
-
-{{- /* Recurse into subsections */ -}}
-{{- range $s := $section.Sections -}}
-{{- template "llms_print_section" (dict "section" $s "depth" (add $depth 1)) -}}
-{{- end -}}
-{{- end -}}
-{{- end -}}
+       Named `home.llms.txt`, not `llms.txt`, and that matters: the explicit
+       `<kind>.<format>.<ext>` form outranks the theme's `llms.txt` without *shadowing*
+       it, so the theme's `{{ define "llms_print_section" }}` further down is still
+       parsed and can be called below. Naming this file `llms.txt` would hide the
+       theme's copy entirely and force this one to carry its own duplicate of that
+       recursive printer. */ -}}
 
 {{- /* Main template starts here */ -}}
 # {{ site.Title }}
@@ -47,7 +29,7 @@ these indexes.
        under a heading the way the format describes. */ -}}
 {{- $orphans := slice -}}
 {{- range $p := where site.RegularPages "Section" "" -}}
-  {{- if and (not $p.Params.searchHidden) (ne $p.Layout `archives`) (ne $p.Layout `search`) (not $p.IsHome) -}}
+  {{- if and (not $p.Params.searchHidden) (ne $p.Layout `archives`) (ne $p.Layout `search`) -}}
     {{- $orphans = $orphans | append $p -}}
   {{- end -}}
 {{- end -}}

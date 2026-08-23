@@ -24,89 +24,94 @@
   {{- $slugs = $slugs | append (path.Base .RelPermalink) -}}
 {{- end -}}
 
-{{- /* Reusable response objects. */ -}}
-{{- $html := dict
-      "description" "An HTML document."
-      "content" (dict "text/html" (dict "schema" (dict "type" "string"))) -}}
+{{- /* Reusable pieces. Every response below is an opaque document rather than a
+       modelled object, so they all share one schema; hoisting it (and the tag slices)
+       means a typo cannot make one endpoint quietly differ from its neighbours. */ -}}
+{{- $text := dict "type" "string" -}}
+{{- $htmlBody := dict "text/html" (dict "schema" $text) -}}
+{{- $pageTags := slice "pages" -}}
+{{- $indexTags := slice "indexes" -}}
+
+{{- $html := dict "description" "An HTML document." "content" $htmlBody -}}
 
 {{- $notFound := dict
       "description" "No such path. The response carries a real 404 status and a short HTML body linking to /llms.txt, /sitemap.xml, /index.json, /index.xml and /openapi.json so that a client can recover without guessing."
-      "content" (dict "text/html" (dict "schema" (dict "type" "string"))) -}}
+      "content" $htmlBody -}}
 
 {{- $paths := dict
 
   "/" (dict "get" (dict
     "operationId" "getHome"
     "summary" "Home page"
-    "description" "Server-rendered HTML. Carries a single H1 and the site introduction in the raw markup; no JavaScript is required to read it."
-    "tags" (slice "pages")
+    "description" "Server-rendered HTML, readable without JavaScript, but deliberately sparse in prose: a profile card plus a JSON-LD ProfilePage/Person graph describing the site owner. For the site's actual content, start from /llms.txt or /index.json."
+    "tags" $pageTags
     "responses" (dict "200" $html)))
 
   "/about/" (dict "get" (dict
     "operationId" "getAbout"
     "summary" "About page"
     "description" "Biography and a dated career timeline."
-    "tags" (slice "pages")
+    "tags" $pageTags
     "responses" (dict "200" $html)))
 
   "/chrispanag-on-the-web/" (dict "get" (dict
     "operationId" "getOnTheWeb"
     "summary" "Me on the web"
     "description" "Talks, podcasts, interviews, press appearances and profile links."
-    "tags" (slice "pages")
+    "tags" $pageTags
     "responses" (dict "200" $html)))
 
   "/posts/" (dict "get" (dict
     "operationId" "listPosts"
     "summary" "Blog index"
     "description" "Paginated list of blog posts."
-    "tags" (slice "pages")
+    "tags" $pageTags
     "responses" (dict "200" $html)))
 
   "/posts/{slug}/" (dict "get" (dict
     "operationId" "getPost"
     "summary" "A single blog post"
-    "tags" (slice "pages")
+    "tags" $pageTags
     "parameters" (slice (dict
       "name" "slug"
       "in" "path"
       "required" true
       "description" "Post slug. The enum lists every post published at the time this document was generated."
-      "schema" (dict "type" "string" "enum" $slugs)))
+      "schema" (merge $text (dict "enum" $slugs))))
     "responses" (dict "200" $html "404" $notFound)))
 
   "/llms.txt" (dict "get" (dict
     "operationId" "getLlmsTxt"
     "summary" "Plain-text site index for LLMs"
     "description" "An llmstxt.org index: every page on the site as a Markdown link list, grouped by section."
-    "tags" (slice "indexes")
+    "tags" $indexTags
     "responses" (dict "200" (dict
       "description" "The site index."
-      "content" (dict "text/plain" (dict "schema" (dict "type" "string")))))))
+      "content" (dict "text/plain" (dict "schema" $text))))))
 
   "/sitemap.xml" (dict "get" (dict
     "operationId" "getSitemap"
     "summary" "XML sitemap"
     "description" "Every canonical URL on the site with its last-modified date, per the sitemaps.org schema."
-    "tags" (slice "indexes")
+    "tags" $indexTags
     "responses" (dict "200" (dict
       "description" "A urlset document."
-      "content" (dict "application/xml" (dict "schema" (dict "type" "string")))))))
+      "content" (dict "application/xml" (dict "schema" $text))))))
 
   "/index.xml" (dict "get" (dict
     "operationId" "getFeed"
     "summary" "RSS feed"
     "description" "RSS 2.0 feed of blog posts."
-    "tags" (slice "indexes")
+    "tags" $indexTags
     "responses" (dict "200" (dict
       "description" "An RSS document."
-      "content" (dict "application/rss+xml" (dict "schema" (dict "type" "string")))))))
+      "content" (dict "application/rss+xml" (dict "schema" $text))))))
 
   "/index.json" (dict "get" (dict
     "operationId" "getSearchIndex"
     "summary" "Full-text search index"
     "description" "The Fuse.js index behind /search/. One entry per page, with the full plain-text body, so a client can read the whole site in a single request."
-    "tags" (slice "indexes")
+    "tags" $indexTags
     "responses" (dict "200" (dict
       "description" "The search index."
       "content" (dict "application/json" (dict
@@ -115,7 +120,7 @@
   "/openapi.json" (dict "get" (dict
     "operationId" "getOpenapi"
     "summary" "This document"
-    "tags" (slice "indexes")
+    "tags" $indexTags
     "responses" (dict "200" (dict
       "description" "The OpenAPI description of this site."
       "content" (dict "application/json" (dict "schema" (dict "type" "object")))))))
@@ -124,22 +129,22 @@
     "operationId" "getRobots"
     "summary" "Crawl policy"
     "description" "Allows all user agents and points at the sitemap. No AI crawler is disallowed."
-    "tags" (slice "indexes")
+    "tags" $indexTags
     "responses" (dict "200" (dict
       "description" "The robots.txt policy."
-      "content" (dict "text/plain" (dict "schema" (dict "type" "string")))))))
+      "content" (dict "text/plain" (dict "schema" $text))))))
 
   "/{path}" (dict "get" (dict
     "operationId" "getUnknownPath"
     "summary" "Any other path"
     "description" "Stands for any path not listed above, including multi-segment paths. This site never answers an unknown path with a 200 shell: unknown paths return a real 404."
-    "tags" (slice "pages")
+    "tags" $pageTags
     "parameters" (slice (dict
       "name" "path"
       "in" "path"
       "required" true
       "description" "Any path that is not one of the documented ones."
-      "schema" (dict "type" "string")))
+      "schema" $text))
     "responses" (dict "404" $notFound)))
 -}}
 
