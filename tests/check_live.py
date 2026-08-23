@@ -31,7 +31,12 @@ USER_AGENT = "chrispanag.com-endpoint-check"
 
 
 def fetch(url, accept=None, method="GET"):
-    """Return (status, headers, body). Never raises on an HTTP error status."""
+    """Return (status, headers, body). Never raises on an HTTP error status.
+
+    A transport failure (DNS, refused connection, timeout) is a different thing and is
+    left to propagate: it means the run could not happen, not that a check failed, and
+    __main__ turns it into exit code 2 rather than a misleading FAIL line.
+    """
     headers = {"User-Agent": USER_AGENT}
     if accept:
         headers["Accept"] = accept
@@ -145,4 +150,10 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except (urllib.error.URLError, TimeoutError) as exc:
+        # Exit 2 is "could not run", the same code check_build.py uses for a missing
+        # build. Exit 1 is reserved for real failed assertions.
+        print(f"\ncould not reach the site: {exc}", file=sys.stderr)
+        sys.exit(2)

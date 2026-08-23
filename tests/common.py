@@ -59,6 +59,10 @@ class Page(HTMLParser):
         self._in_title = False
         self._h1 = None
         self.feed(html)
+        # feed() buffers a trailing run of text when convert_charrefs is on, in case a
+        # character reference is still being assembled. close() flushes it, so without
+        # this the end of the document can be missing from .text.
+        self.close()
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
@@ -145,16 +149,18 @@ class Report:
     as PENDING and kept out of the exit code, so a red run always means a real break.
     """
 
-    def __init__(self, width=4):
+    # Wide enough for the longest label ("PENDING"), so names line up in a column.
+    LABEL_WIDTH = 7
+
+    def __init__(self):
         self.passed = 0
         self.failures = []
         self.pending = []
-        self._pad = " " * width
 
     def _say(self, label, name, detail=""):
-        print(f"  {label:<{len(self._pad) + 3}} {name}")
+        print(f"  {label:<{self.LABEL_WIDTH}} {name}")
         if detail:
-            print(f"      {' ' * len(self._pad)}{detail}")
+            print(f"  {'':<{self.LABEL_WIDTH}} {detail}")
 
     def check(self, name, ok, detail=""):
         if ok:

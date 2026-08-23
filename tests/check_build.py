@@ -15,11 +15,18 @@ import sys
 from pathlib import Path
 from urllib.parse import urlsplit
 
-from common import (BASE_URL, INDEX_FILES, LLMS_LINK_RE, MAX_404_BYTES,
-                    RECOVERY_TARGETS, Page, Report, check_llms_shape,
-                    check_person_node, graph_nodes, is_alias_stub, json_ld)
+from common import (BASE_URL, INDEX_FILES, MAX_404_BYTES, RECOVERY_TARGETS,
+                    Page, Report, check_llms_shape, check_person_node,
+                    graph_nodes, is_alias_stub, json_ld)
 
 SITE_TITLE = "Christos Panagiotakopoulos"
+
+# The openapi.json entry that stands for everything else, and promises it 404s.
+CATCH_ALL_PATH = "/{path}"
+
+# The error document. It is a real 200 at its own address, but the spec describes it
+# through the 404 responses on the paths above rather than as a path of its own.
+ERROR_DOCUMENT = "/404.html"
 
 
 def local_path(out: Path, url: str):
@@ -35,6 +42,31 @@ def local_path(out: Path, url: str):
     return None
 
 
+def real_pages(out: Path):
+    """Every page the build serves, as (file, site URL, html).
+
+    Alias stubs are skipped: pagination.disableAliases is false, so Hugo writes a
+    meta-refresh stub for /posts/page/1/ and every taxonomy equivalent, and those are
+    redirects rather than pages. 404.html is included, under /404.html.
+    """
+    for page_path in sorted(out.glob("**/*.html")):
+        html = page_path.read_text(encoding="utf-8")
+        if is_alias_stub(html):
+            continue
+        if page_path.name == "index.html":
+            directory = page_path.parent.relative_to(out).as_posix()
+            url = "/" if directory == "." else f"/{directory}/"
+        else:
+            url = "/" + page_path.relative_to(out).as_posix()
+        yield page_path, url, html
+
+
+def path_pattern(template: str):
+    """An OpenAPI path template as a regex, where {name} matches one path segment."""
+    literals = [re.escape(part) for part in re.split(r"\{[^}]*\}", template)]
+    return re.compile("^" + "[^/]+".join(literals) + "$")
+
+
 def check_home(out: Path, r: Report):
     print("\nhome page (PaperMod profile card, deliberately minimal)")
     html = (out / "index.html").read_text(encoding="utf-8")
@@ -47,9 +79,18 @@ def check_home(out: Path, r: Report):
     # stated in params.schema, params.profileMode.subtitle and the About timeline, and
     # pinning the exact string here would make a promotion fail the tests.
     r.check("profile card renders", 'class="profile"' in html or "class=profile" in html)
-    r.check("profile subtitle renders", "<span>" in html)
     r.check("profile buttons render", html.count("class=button") >= 3
             or html.count('class="button"') >= 3)
+
+    # Scoped to the card, because a bare `"<span>" in html` matches the footer and so
+    # can never fail. profileMode.subtitle is markdown, so also assert it was rendered
+    # rather than printed as "[Prelude](https://prelude.so)".
+    card = re.search(r"profile_inner(.*?)social-icons", html, re.S)
+    r.check("profile subtitle renders", bool(card) and "<span>" in card.group(1),
+            "no subtitle span between the profile card and its social icons")
+    r.check("profile subtitle markdown is rendered, not literal",
+            bool(card) and "](" not in card.group(1),
+            f"got {card.group(1)!r}" if card else "")
 
     # The home page is the profile card and nothing else: no body copy below the hero,
     # none added inside the card. That is a deliberate design decision, and it outranks
@@ -82,6 +123,13 @@ def check_404(out: Path, r: Report, index_links):
             f"got {len(raw)} bytes")
     r.check("has an h1", len(page.h1s) == 1, f"got {page.h1s!r}")
     r.check("is not an alias stub", not is_alias_stub(raw.decode("utf-8")))
+
+    # GET /404.html is itself a 200 that self-canonicalizes, so without a noindex the
+    # error document is indexable like any other page. See extend_head.html. Read every
+    # robots tag: the theme emits its own "index, follow" first.
+    robots = [tag.get("content", "") for tag in page.metas if tag.get("name") == "robots"]
+    r.check("is marked noindex", any("noindex" in value for value in robots),
+            f"got {robots!r}")
 
     # The recovery links an agent needs, taken from what openapi.json declares rather
     # than a second hand-written list: the spec is the site's statement of its
@@ -127,7 +175,7 @@ def check_openapi(out: Path, r: Report):
     for field in ("title", "version", "description"):
         r.check(f"info.{field} is set", bool(info.get(field)))
     r.equal("servers[0].url has no trailing slash",
-            spec.get("servers", [{}])[0].get("url"), BASE_URL)
+            (spec.get("servers") or [{}])[0].get("url"), BASE_URL)
 
     paths = spec.get("paths", {})
     r.check("declares paths", bool(paths))
@@ -147,7 +195,7 @@ def check_openapi(out: Path, r: Report):
     unresolved = []
     for ref in re.findall(r'"\$ref"\s*:\s*"([^"]+)"', raw):
         node = spec
-        for part in ref.lstrip("#/").split("/"):
+        for part in ref.removeprefix("#/").split("/"):
             node = node.get(part) if isinstance(node, dict) else None
             if node is None:
                 unresolved.append(ref)
@@ -158,6 +206,17 @@ def check_openapi(out: Path, r: Report):
     # really wrote. Templated paths (/{path}, /posts/{slug}/) are checked separately.
     missing = [p for p in paths if "{" not in p and local_path(out, BASE_URL + p) is None]
     r.check("every concrete path exists in the build", not missing, f"missing: {missing}")
+
+    # And the other direction, which is the one that bites. CATCH_ALL_PATH promises a
+    # 404 for anything the spec does not list, so a page the build really serves but
+    # the spec omits turns that promise into a false statement. Checking only that
+    # documented paths exist is what let /search/ and the taxonomy pages slip through.
+    covered = [path_pattern(p) for p in paths if p != CATCH_ALL_PATH]
+    undocumented = [url for _, url, _ in real_pages(out)
+                    if url != ERROR_DOCUMENT
+                    and not any(pattern.match(url) for pattern in covered)]
+    r.check("every page in the build is documented", not undocumented,
+            f"undocumented: {undocumented}")
 
     # The slug enum must match the posts on disk, or agents get 404s from the spec.
     slugs = set()
@@ -170,7 +229,7 @@ def check_openapi(out: Path, r: Report):
 
     # The 404 contract this site actually implements has to be in the spec.
     r.check("documents a 404 for unknown paths",
-            "404" in paths.get("/{path}", {}).get("get", {}).get("responses", {}))
+            "404" in paths.get(CATCH_ALL_PATH, {}).get("get", {}).get("responses", {}))
 
     indexes = {p for p, item in paths.items()
                for op in item.values() if "indexes" in op.get("tags", [])}
@@ -256,16 +315,15 @@ def check_structured_data(out: Path, r: Report):
 def check_discovery_links(out: Path, r: Report):
     print("\ndiscovery links in <head> (layouts/_partials/extend_head.html)")
     missing_described, missing_service, pages = [], [], []
-    for page_path in sorted(out.glob("**/index.html")):
-        html = page_path.read_text(encoding="utf-8")
-        if is_alias_stub(html):
-            continue
+    # real_pages covers 404.html too, which is the page an agent is likeliest to land
+    # on by accident and so the one that most needs the discovery links.
+    for page_path, url, html in real_pages(out):
         pages.append(page_path)
         page = Page(html)
         if page.link("describedby") != f"{BASE_URL}/llms.txt":
-            missing_described.append(str(page_path.relative_to(out)))
+            missing_described.append(url)
         if page.link("service-desc") != f"{BASE_URL}/openapi.json":
-            missing_service.append(str(page_path.relative_to(out)))
+            missing_service.append(url)
 
     r.check("build produced HTML pages", bool(pages))
     r.check("every page links rel=describedby to llms.txt", not missing_described,

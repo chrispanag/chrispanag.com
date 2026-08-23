@@ -16,7 +16,7 @@
 {{- /* info.version describes the documented surface, not the build. Bump it when a
        path, response or schema below changes. site.Lastmod is deliberately not used:
        it tracks the newest post, which says nothing about this document. */ -}}
-{{- $version := "1.0.0" -}}
+{{- $version := "1.1.0" -}}
 
 {{- /* Real post slugs, so /posts/{slug}/ documents the pages that actually exist. */ -}}
 {{- $slugs := slice -}}
@@ -25,8 +25,8 @@
 {{- end -}}
 
 {{- /* Reusable pieces. Every response below is an opaque document rather than a
-       modelled object, so they all share one schema; hoisting it (and the tag slices)
-       means a typo cannot make one endpoint quietly differ from its neighbours. */ -}}
+       modeled object, so they all share one schema; hoisting it (and the tag slices)
+       means a typo cannot make one endpoint quietly differ from its neighbors. */ -}}
 {{- $text := dict "type" "string" -}}
 {{- $htmlBody := dict "text/html" (dict "schema" $text) -}}
 {{- $pageTags := slice "pages" -}}
@@ -38,6 +38,12 @@
       "description" "No such path. The response carries a real 404 status and a short HTML body linking to /llms.txt, /sitemap.xml, /index.json, /index.xml and /openapi.json so that a client can recover without guessing."
       "content" $htmlBody -}}
 
+{{- /* Every path below has to be one the build really serves, and every page the
+       build serves has to match one of them: the /{path} entry at the end says that
+       anything unlisted 404s, so an omission here turns into a false statement there.
+       The theme's search and taxonomy pages count. tests/check_build.py checks both
+       directions. A comment cannot sit inside the dict literal below, so keep this
+       one here. */ -}}
 {{- $paths := dict
 
   "/" (dict "get" (dict
@@ -78,6 +84,51 @@
       "required" true
       "description" "Post slug. The enum lists every post published at the time this document was generated."
       "schema" (merge $text (dict "enum" $slugs))))
+    "responses" (dict "200" $html "404" $notFound)))
+
+  "/search/" (dict "get" (dict
+    "operationId" "getSearch"
+    "summary" "Search page"
+    "description" "Search over the whole site. The matching happens in the browser against /index.json, so a client that does not run JavaScript should fetch that file instead."
+    "tags" $pageTags
+    "responses" (dict "200" $html)))
+
+  "/tags/" (dict "get" (dict
+    "operationId" "listTags"
+    "summary" "Tag index"
+    "description" "Every tag used by a post, each linking to the posts carrying it."
+    "tags" $pageTags
+    "responses" (dict "200" $html)))
+
+  "/tags/{tag}/" (dict "get" (dict
+    "operationId" "getTag"
+    "summary" "Posts carrying one tag"
+    "tags" $pageTags
+    "parameters" (slice (dict
+      "name" "tag"
+      "in" "path"
+      "required" true
+      "description" "A tag slug, as listed on /tags/."
+      "schema" $text))
+    "responses" (dict "200" $html "404" $notFound)))
+
+  "/categories/" (dict "get" (dict
+    "operationId" "listCategories"
+    "summary" "Category index"
+    "description" "Every category used by a post, each linking to the posts filed under it."
+    "tags" $pageTags
+    "responses" (dict "200" $html)))
+
+  "/categories/{category}/" (dict "get" (dict
+    "operationId" "getCategory"
+    "summary" "Posts filed under one category"
+    "tags" $pageTags
+    "parameters" (slice (dict
+      "name" "category"
+      "in" "path"
+      "required" true
+      "description" "A category slug, as listed on /categories/."
+      "schema" $text))
     "responses" (dict "200" $html "404" $notFound)))
 
   "/llms.txt" (dict "get" (dict
@@ -137,7 +188,7 @@
   "/{path}" (dict "get" (dict
     "operationId" "getUnknownPath"
     "summary" "Any other path"
-    "description" "Stands for any path not listed above, including multi-segment paths. This site never answers an unknown path with a 200 shell: unknown paths return a real 404."
+    "description" "Stands for any path not listed above, including multi-segment paths. This site never answers an unknown path with a 200 shell: unknown paths return a real 404. The one exception is Hugo's pagination aliases (a trailing /page/1/ on any listing above), which are meta-refresh redirects back to the listing itself."
     "tags" $pageTags
     "parameters" (slice (dict
       "name" "path"

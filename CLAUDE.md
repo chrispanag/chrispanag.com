@@ -55,17 +55,25 @@ When changing any of the following, run `./tests/run.sh`:
 - Because the home page says so little in prose, it says it in **JSON-LD** instead: a
   `ProfilePage` whose `mainEntity` is a fully described `Person` (job title, employer,
   location, `knowsAbout`, `sameAs`). The copy lives in `params.schema` in `config.yml`;
-  keep it factual, it is a public claim about a real person. Note that the job title and
-  employer are stated in **three** places that nothing keeps in sync: `params.schema`,
-  `params.profileMode.subtitle`, and the About page timeline. Change all three together. This is invisible, so it
-  does *not* satisfy heuristics that count rendered characters.
+  keep it factual, it is a public claim about a real person. Being structured data it is
+  invisible, so it does *not* satisfy heuristics that count rendered characters. Note
+  that the job title and employer are stated in **three** places that nothing keeps in
+  sync: `params.schema`, `params.profileMode.subtitle`, and the About page timeline.
+  Change all three together.
 - **Unknown paths return a real 404** (DigitalOcean App Platform serves `404.html` as
   the error document) with a short body linking to the machine-readable indexes. Keep
-  that body short and link-dense; a long one defeats its purpose.
+  that body short and link-dense; a long one defeats its purpose. The same file is also
+  a plain 200 at `/404.html`, so `extend_head.html` adds `robots: noindex` on the `404`
+  page kind to keep "page not found" out of search results.
 - `/llms.txt` follows the **llmstxt.org v2 format**: H1, then a blockquote summary, then
   non-heading prose, then H2 file lists. Every file list sits under a heading.
-- `/openapi.json` describes only endpoints that **really exist**; the tests fail if a
-  documented path is not in the build, or if the post slug enum drifts.
+- `/openapi.json` describes **exactly** the endpoints that exist, in both directions:
+  the tests fail if a documented path is not in the build, if the post slug enum drifts,
+  or if the build serves a page the spec does not document. The second direction matters
+  because the spec's `/{path}` entry promises that anything unlisted returns a 404, so
+  an omission there is a false statement rather than a gap. The theme's `/search/`,
+  `/tags/` and `/categories/` pages count as pages, so adding a taxonomy or a section
+  means adding it to `layouts/home.openapi.json` too.
 - Every page carries `rel="describedby"` (llms.txt) and `rel="service-desc"`
   (openapi.json) from `layouts/_partials/extend_head.html`.
 
