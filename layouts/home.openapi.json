@@ -1,0 +1,176 @@
+{{- /* OpenAPI 3.1 description of this site's machine-readable surface.
+
+       This is a static Hugo site, not an application server, so the "API" documented
+       here is exactly what it really serves over HTTP: the generated indexes
+       (llms.txt, sitemap.xml, index.json, index.xml), the HTML pages, and the 404
+       contract for everything else. Nothing below is aspirational; every path is
+       emitted by this build.
+
+       The document is assembled from `dict`/`slice` and rendered with `jsonify` rather
+       than written as literal JSON, so a template mistake becomes a build error
+       instead of a malformed spec. Wired up as the `openapi` output format on the home
+       page (see outputFormats/outputs in config.yml). */ -}}
+
+{{- $base := strings.TrimSuffix "/" site.BaseURL -}}
+
+{{- /* info.version describes the documented surface, not the build. Bump it when a
+       path, response or schema below changes. site.Lastmod is deliberately not used:
+       it tracks the newest post, which says nothing about this document. */ -}}
+{{- $version := "1.0.0" -}}
+
+{{- /* Real post slugs, so /posts/{slug}/ documents the pages that actually exist. */ -}}
+{{- $slugs := slice -}}
+{{- range where site.RegularPages "Type" "posts" -}}
+  {{- $slugs = $slugs | append (path.Base .RelPermalink) -}}
+{{- end -}}
+
+{{- /* Reusable response objects. */ -}}
+{{- $html := dict
+      "description" "An HTML document."
+      "content" (dict "text/html" (dict "schema" (dict "type" "string"))) -}}
+
+{{- $notFound := dict
+      "description" "No such path. The response carries a real 404 status and a short HTML body linking to /llms.txt, /sitemap.xml, /index.json, /index.xml and /openapi.json so that a client can recover without guessing."
+      "content" (dict "text/html" (dict "schema" (dict "type" "string"))) -}}
+
+{{- $paths := dict
+
+  "/" (dict "get" (dict
+    "operationId" "getHome"
+    "summary" "Home page"
+    "description" "Server-rendered HTML. Carries a single H1 and the site introduction in the raw markup; no JavaScript is required to read it."
+    "tags" (slice "pages")
+    "responses" (dict "200" $html)))
+
+  "/about/" (dict "get" (dict
+    "operationId" "getAbout"
+    "summary" "About page"
+    "description" "Biography and a dated career timeline."
+    "tags" (slice "pages")
+    "responses" (dict "200" $html)))
+
+  "/chrispanag-on-the-web/" (dict "get" (dict
+    "operationId" "getOnTheWeb"
+    "summary" "Me on the web"
+    "description" "Talks, podcasts, interviews, press appearances and profile links."
+    "tags" (slice "pages")
+    "responses" (dict "200" $html)))
+
+  "/posts/" (dict "get" (dict
+    "operationId" "listPosts"
+    "summary" "Blog index"
+    "description" "Paginated list of blog posts."
+    "tags" (slice "pages")
+    "responses" (dict "200" $html)))
+
+  "/posts/{slug}/" (dict "get" (dict
+    "operationId" "getPost"
+    "summary" "A single blog post"
+    "tags" (slice "pages")
+    "parameters" (slice (dict
+      "name" "slug"
+      "in" "path"
+      "required" true
+      "description" "Post slug. The enum lists every post published at the time this document was generated."
+      "schema" (dict "type" "string" "enum" $slugs)))
+    "responses" (dict "200" $html "404" $notFound)))
+
+  "/llms.txt" (dict "get" (dict
+    "operationId" "getLlmsTxt"
+    "summary" "Plain-text site index for LLMs"
+    "description" "An llmstxt.org index: every page on the site as a Markdown link list, grouped by section."
+    "tags" (slice "indexes")
+    "responses" (dict "200" (dict
+      "description" "The site index."
+      "content" (dict "text/plain" (dict "schema" (dict "type" "string")))))))
+
+  "/sitemap.xml" (dict "get" (dict
+    "operationId" "getSitemap"
+    "summary" "XML sitemap"
+    "description" "Every canonical URL on the site with its last-modified date, per the sitemaps.org schema."
+    "tags" (slice "indexes")
+    "responses" (dict "200" (dict
+      "description" "A urlset document."
+      "content" (dict "application/xml" (dict "schema" (dict "type" "string")))))))
+
+  "/index.xml" (dict "get" (dict
+    "operationId" "getFeed"
+    "summary" "RSS feed"
+    "description" "RSS 2.0 feed of blog posts."
+    "tags" (slice "indexes")
+    "responses" (dict "200" (dict
+      "description" "An RSS document."
+      "content" (dict "application/rss+xml" (dict "schema" (dict "type" "string")))))))
+
+  "/index.json" (dict "get" (dict
+    "operationId" "getSearchIndex"
+    "summary" "Full-text search index"
+    "description" "The Fuse.js index behind /search/. One entry per page, with the full plain-text body, so a client can read the whole site in a single request."
+    "tags" (slice "indexes")
+    "responses" (dict "200" (dict
+      "description" "The search index."
+      "content" (dict "application/json" (dict
+        "schema" (dict "$ref" "#/components/schemas/SearchIndex")))))))
+
+  "/openapi.json" (dict "get" (dict
+    "operationId" "getOpenapi"
+    "summary" "This document"
+    "tags" (slice "indexes")
+    "responses" (dict "200" (dict
+      "description" "The OpenAPI description of this site."
+      "content" (dict "application/json" (dict "schema" (dict "type" "object")))))))
+
+  "/robots.txt" (dict "get" (dict
+    "operationId" "getRobots"
+    "summary" "Crawl policy"
+    "description" "Allows all user agents and points at the sitemap. No AI crawler is disallowed."
+    "tags" (slice "indexes")
+    "responses" (dict "200" (dict
+      "description" "The robots.txt policy."
+      "content" (dict "text/plain" (dict "schema" (dict "type" "string")))))))
+
+  "/{path}" (dict "get" (dict
+    "operationId" "getUnknownPath"
+    "summary" "Any other path"
+    "description" "Stands for any path not listed above, including multi-segment paths. This site never answers an unknown path with a 200 shell: unknown paths return a real 404."
+    "tags" (slice "pages")
+    "parameters" (slice (dict
+      "name" "path"
+      "in" "path"
+      "required" true
+      "description" "Any path that is not one of the documented ones."
+      "schema" (dict "type" "string")))
+    "responses" (dict "404" $notFound)))
+-}}
+
+{{- $spec := dict
+  "openapi" "3.1.0"
+  "info" (dict
+    "title" site.Title
+    "summary" "The machine-readable surface of chrispanag.com."
+    "description" "chrispanag.com is a statically generated personal site: a blog, an about page, and a page of public appearances. It exposes no write API and requires no authentication. This document describes the endpoints an agent can fetch, and what each one returns. Start with /llms.txt for a page index, or /index.json for the full text of every page in one request."
+    "version" $version
+    "contact" (dict
+      "name" site.Params.author
+      "url" (printf "%s/about/" $base)))
+  "servers" (slice (dict "url" $base "description" "Production"))
+  "tags" (slice
+    (dict "name" "pages" "description" "HTML pages meant for people, server-rendered and readable without JavaScript.")
+    (dict "name" "indexes" "description" "Machine-readable indexes of the site's content."))
+  "paths" $paths
+  "components" (dict "schemas" (dict
+    "SearchIndex" (dict
+      "type" "array"
+      "description" "Every indexable page on the site."
+      "items" (dict "$ref" "#/components/schemas/SearchIndexEntry"))
+    "SearchIndexEntry" (dict
+      "type" "object"
+      "required" (slice "title" "content" "permalink" "summary")
+      "properties" (dict
+        "title" (dict "type" "string" "description" "The page title.")
+        "content" (dict "type" "string" "description" "The full body of the page as plain text.")
+        "permalink" (dict "type" "string" "format" "uri" "description" "Absolute URL of the page.")
+        "summary" (dict "type" "string" "description" "A short excerpt of the page.")))))
+-}}
+
+{{- jsonify (dict "indent" "  " "noHTMLEscape" true) $spec -}}

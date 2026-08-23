@@ -2,3 +2,10 @@
        links but not a manifest, so the android-chrome icons are only used once
        this is present. */ -}}
 <link rel="manifest" href="{{ "site.webmanifest" | absURL }}">
+
+{{- /* Point agents at the site's llms.txt overview and OpenAPI description. The
+       llms.txt v2 format (https://llmstxt.org/) recommends rel="describedby" for the
+       first; the second is the same discovery hint in the shape OpenAPI clients look
+       for. Both are emitted on every page, since an agent may land on any of them. */ -}}
+<link rel="describedby" type="text/plain" href="{{ "llms.txt" | absURL }}">
+<link rel="service-desc" type="application/json" href="{{ "openapi.json" | absURL }}">

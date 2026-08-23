@@ -1,0 +1,40 @@
+/* 404 page (layouts/404.html).
+
+   PaperMod's `.not-found` rule is `position: absolute` with `height: 80%`, which
+   centers a lone glyph over the viewport and would sit on top of the recovery links
+   this page now carries. These classes replace it rather than override it, so the
+   numeral and the body lay out in normal flow. */
+.not-found-page {
+    margin: var(--gap) 0;
+}
+
+.not-found-code {
+    margin: 0;
+    font-size: 120px;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    color: var(--tertiary);
+}
+
+/* Scoped under `.post-content` to beat the theme's own `.post-content h1/h2` rules,
+   which are more specific than a bare class selector. */
+.post-content.not-found-content h1 {
+    margin-top: 0;
+    text-align: center;
+}
+
+.post-content.not-found-content h2 {
+    margin-top: 1.8rem;
+    font-size: 1.1rem;
+}
+
+.post-content.not-found-content ul {
+    margin-bottom: 0;
+}
+
+@media (max-width: 700px) {
+    .not-found-code {
+        font-size: 84px;
+    }
+}
